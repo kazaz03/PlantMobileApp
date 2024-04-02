@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
+    app:cardBackgroundColor="#CCBABA"
+    app:cardElevation="5dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/slikaItem"
+            android:layout_width="120dp"
+            android:layout_height="130dp"
+            android:contentDescription="@string/opisslike"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.05"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/nazivItem"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:text="@string/ime"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:background="#D3CFCF"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toEndOf="@id/slikaItem"
+            app:layout_constraintTop_toTopOf="@id/slikaItem"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/porodicaItem"/>
+
+        <TextView
+            android:id="@+id/porodicaItem"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:textColor="@color/black"
+            android:textSize="10sp"
+            android:background="#D3CFCF"
+            app:layout_constraintStart_toEndOf="@id/slikaItem"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/nazivItem"
+            app:layout_constraintBottom_toTopOf="@id/klimatskiTipItem"
+            android:text="@string/porodica" />
+
+        <TextView
+            android:id="@+id/klimatskiTipItem"
+            app:layout_constraintStart_toEndOf="@id/slikaItem"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/porodicaItem"
+            app:layout_constraintBottom_toTopOf="@id/zemljisniTipItem"
+            android:textSize="10sp"
+            android:background="#D3CFCF"
+            android:textColor="@color/black"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:text="@string/ktip1" />
+
+        <TextView
+            android:id="@+id/zemljisniTipItem"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:text="@string/ztip1"
+            android:textSize="10sp"
+            android:textColor="@color/black"
+            android:background="#D3CFCF"
+            app:layout_constraintStart_toEndOf="@id/slikaItem"
+            app:layout_constraintTop_toBottomOf="@id/klimatskiTipItem"
+            app:layout_constraintBottom_toBottomOf="@id/slikaItem"
+            app:layout_constraintEnd_toEndOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="#D39595"
+        android:id="@+id/linija2"
+        android:orientation="horizontal"/>
+</androidx.cardview.widget.CardView>

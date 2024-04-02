@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Projekat</string>
+    <string name="naziv">Ime</string>
+    <string name="porodica">Porodica</string>
+    <string name="opisslike">Slika biljke</string>
+    <string name="ime">Naziv biljke</string>
+    <string name="upozorenje">Tekst upozorenja</string>
+    <string name="korist1">korist 1</string>
+    <string name="korist2">korist 2</string>
+    <string name="korist3">korist 3</string>
+    <string name="okus">Profil okusa</string>
+    <string name="jelo1">jelo 1</string>
+        <string name="jelo2">jelo 2</string>
+    <string name="jelo3">jelo 3</string>
+    <string name="porodica1">Porodica</string>
+    <string name="ktip1">Prvi klimatski tip</string>
+    <string name="ztip1">Prvi zemljišni tip</string>
+    <string name="reset">Reset</string>
+</resources>

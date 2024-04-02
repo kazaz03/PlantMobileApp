@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="#CCBABA"
+    app:cardElevation="5dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/slikaItem"
+            android:layout_width="120dp"
+            android:layout_height="130dp"
+            android:contentDescription="@string/opisslike"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.05"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/nazivItem"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:background="#D3CFCF"
+            android:text="@string/ime"
+            android:textColor="@color/black"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/profilOkusaItem"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/slikaItem"
+            app:layout_constraintTop_toTopOf="@id/slikaItem" />
+
+        <TextView
+            android:id="@+id/profilOkusaItem"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="#D3CFCF"
+            android:text="@string/okus"
+            android:textColor="@color/black"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toTopOf="@id/jelo1Item"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/slikaItem"
+            app:layout_constraintTop_toBottomOf="@id/nazivItem" />
+
+        <TextView
+            android:id="@+id/jelo1Item"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="#D3CFCF"
+            android:text="@string/jelo1"
+            android:textColor="@color/black"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toBottomOf="@id/slikaItem"
+            app:layout_constraintEnd_toStartOf="@id/jelo2Item"
+            app:layout_constraintStart_toEndOf="@id/slikaItem"
+            app:layout_constraintTop_toBottomOf="@id/profilOkusaItem" />
+
+        <TextView
+            android:id="@+id/jelo2Item"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="#D3CFCF"
+            android:text="@string/jelo2"
+            android:textColor="@color/black"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toBottomOf="@id/jelo1Item"
+            app:layout_constraintEnd_toStartOf="@id/jelo3Item"
+            app:layout_constraintStart_toEndOf="@id/jelo1Item"
+            app:layout_constraintTop_toTopOf="@id/jelo1Item" />
+
+        <TextView
+            android:id="@+id/jelo3Item"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="#D3CFCF"
+            android:text="@string/jelo3"
+            android:textColor="@color/black"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toBottomOf="@id/jelo1Item"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/jelo2Item"
+            app:layout_constraintTop_toTopOf="@id/jelo1Item" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="#D39595"
+        android:id="@+id/linija2"
+        android:orientation="horizontal"/>
+</androidx.cardview.widget.CardView>
