@@ -56,8 +56,20 @@ class BiljkaAdapterBotanicka(var biljke: List<Biljka>): RecyclerView.Adapter<Bil
         }
         holder.nazivBiljke.text=biljka.naziv;
         holder.porodica.text=biljka.porodica
-        holder.klima.text=biljka.klimatskiTipovi[0].opis
-        holder.zemlja.text=biljka.zemljisniTipovi[0].naziv
+        try
+        {
+            holder.klima.text=biljka.klimatskiTipovi[0].opis
+        }catch(e: Exception)
+        {
+            holder.klima.text=""
+        }
+        try
+        {
+            holder.zemlja.text=biljka.zemljisniTipovi[0].naziv
+        }catch(e: Exception)
+        {
+            holder.zemlja.text=""
+        }
     }
 
     override fun getItemCount(): Int {
@@ -86,8 +98,11 @@ class BiljkaAdapterBotanicka(var biljke: List<Biljka>): RecyclerView.Adapter<Bil
     {
         val sharedClimates = biljka.klimatskiTipovi
         val sharedSoils = biljka.zemljisniTipovi
+        val porodica=biljka.porodica
 
-        biljke = biljke.toList().filter { it.klimatskiTipovi.intersect(sharedClimates).isNotEmpty() && it.zemljisniTipovi.intersect(sharedSoils).isNotEmpty() }
+        biljke = biljke.toList().filter { it.klimatskiTipovi.intersect(sharedClimates).isNotEmpty() &&
+                it.zemljisniTipovi.intersect(sharedSoils).isNotEmpty() &&
+        it.porodica==porodica}
         notifyDataSetChanged()
         return biljke.toList()
     }
