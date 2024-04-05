@@ -80,7 +80,12 @@ class BiljkaAdapterMedicinska(var biljke: List<Biljka>): RecyclerView.Adapter<Bi
         {
             holder.korist3.text="";
         }
-        holder.upozorenje.text=biljka.medicinskoUpozorenje;
+        try {
+            holder.upozorenje.text=biljka.medicinskoUpozorenje;}
+        catch(e:Exception)
+        {
+            holder.upozorenje.text=""
+        }
     }
 
     override fun getItemCount(): Int {
