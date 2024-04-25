@@ -10,10 +10,26 @@
     <string name="korist3">korist 3</string>
     <string name="okus">Profil okusa</string>
     <string name="jelo1">jelo 1</string>
-        <string name="jelo2">jelo 2</string>
+    <string name="jelo2">jelo 2</string>
     <string name="jelo3">jelo 3</string>
     <string name="porodica1">Porodica</string>
     <string name="ktip1">Prvi klimatski tip</string>
     <string name="ztip1">Prvi zemljišni tip</string>
     <string name="reset">Reset</string>
+    <string name="dodaj">Dodaj</string>
+    <string name="form">Form</string>
+    <string name="unos_naziva">Unesi naziv</string>
+    <string name="unos_porodice">Unesi porodicu</string>
+    <string name="unos_medicinsko">Unesi medicinsko upozorenje</string>
+    <string name="unos_jela">Unesi jelo</string>
+    <string name="odabir_okusa">Odaberi profil okusa</string>
+    <string name="unos">Unos podataka</string>
+    <string name="opis_okusa">Okus</string>
+    <string name="medicina">Odaberi medicinske koristi</string>
+    <string name="klimaodabir">Odaberi klimatske tipove</string>
+    <string name="zemljaodabir">Odaberi zemljisne tipove</string>
+    <string name="listajela">Dodana jela za biljku</string>
+    <string name="dodajjelo">Dodaj jelo</string>
+     <string name="dodajbiljku">Dodaj biljku</string>
+    <string name="uslikajbiljku">Uslikaj biljku</string>
 </resources>

@@ -2,4 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="roza">#C3849A</color>
+    <color name="svijetlo_roza">#CCBABA</color>
+    <color name="pozadina2">#7C5F81</color>
+    <color name="pozadina_textview">#A1779F</color>
+    <color name="bojateksta">#393535</color>
 </resources>

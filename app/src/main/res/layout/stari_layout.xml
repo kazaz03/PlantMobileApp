@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".NovaBiljkaActivity">
+
+    <LinearLayout
+        android:id="@+id/linija4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linija3"
+        android:orientation="vertical"
+        android:background="@color/pozadina2">
+
+        <LinearLayout
+            android:id="@+id/linija5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/nazivET"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="45dp"
+                android:layout_marginStart="15sp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="20dp"
+                android:background="@color/pozadina_textview"
+                android:hint="@string/unos_naziva"
+                android:inputType="text"
+                android:textColorHint="#D6BDBD"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/porodicaET"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="45dp"
+                android:layout_marginStart="15sp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginTop="20dp"
+                android:background="@color/pozadina_textview"
+                android:hint="@string/unos_porodice"
+                android:inputType="text"
+                android:textColorHint="#D6BDBD"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/medicinskoUpozorenjeET"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="15dp"
+            android:textColorHint="#D6BDBD"
+            android:background="@color/pozadina_textview"
+            android:inputType="text"
+            android:textSize="15sp"
+            android:hint="@string/unos_medicinsko" />
+
+        <EditText
+            android:id="@+id/jeloET"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginStart="15dp"
+            android:hint="@string/unos_jela"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="10dp"
+            android:textColorHint="#D6BDBD"
+            android:textSize="15sp"
+            android:background="@color/pozadina_textview"
+            android:inputType="text" />
+
+        <TextView
+            android:id="@+id/tekstJelo"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginEnd="15dp"
+            android:text="@string/odabir_okusa"
+            android:textSize="15sp"
+            android:textColor="@color/white"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="15dp"/>
+        <ListView
+            android:id="@+id/profilOkusaLV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:choiceMode="singleChoice" />
+
+        <TextView
+            android:id="@+id/medicinaTekst"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginEnd="15dp"
+            android:textSize="15sp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="15dp"
+            android:textColor="@color/white"
+            android:layout_marginBottom="10dp"
+            android:text="@string/medicina" />
+
+        <ListView
+            android:id="@+id/medicinskaKoristLV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:choiceMode="multipleChoice" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linija3"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="#7F298E"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/formanaziv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/form"
+            android:textSize="22sp"
+            android:textColor="@color/white"
+            android:layout_gravity="start"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

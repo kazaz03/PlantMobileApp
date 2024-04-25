@@ -1,6 +1,7 @@
 package com.example.projekat
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -15,7 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
-    private var filtriranaLista: List<Biljka> = emptyList()
+    private var filtriranaLista: MutableList<Biljka> = mutableListOf()
     private lateinit var biljkeView: RecyclerView
     private lateinit var biljkeAdapter1: BiljkaAdapterMedicinska
     private lateinit var biljkeAdapter2: BiljkaAdapterBotanicka
@@ -30,7 +31,7 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        biljkeView=findViewById(R.id.biljkeRV);
+        biljkeView=findViewById(R.id.biljkeRV)
         biljkeView.layoutManager=LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
 
         //dodavanje opcija u spinner
@@ -42,9 +43,9 @@ class MainActivity : AppCompatActivity() {
         val spinnerRV=findViewById<Spinner>(R.id.modSpinner)
         spinnerRV.adapter=spinner_adapter
 
-        biljkeAdapter1=BiljkaAdapterMedicinska(listOf())
-        biljkeAdapter2= BiljkaAdapterBotanicka(listOf())
-        biljkeAdapter3=BiljkaAdapterKuharska(listOf())
+        biljkeAdapter1=BiljkaAdapterMedicinska(mutableListOf())
+        biljkeAdapter2= BiljkaAdapterBotanicka(mutableListOf())
+        biljkeAdapter3=BiljkaAdapterKuharska(mutableListOf())
 
         spinnerRV.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             @SuppressLint("SuspiciousIndentation")
@@ -83,19 +84,19 @@ class MainActivity : AppCompatActivity() {
         //i pored toga se spasi filtrirana lista
         biljkeAdapter1.setOnItemClickListener(object : BiljkaAdapterMedicinska.OnItemClickListener {
             override fun onItemClick(biljka: Biljka) {
-                filtriranaLista=biljkeAdapter1.filterByCriteria(biljka)
+                filtriranaLista= biljkeAdapter1.filterByCriteria(biljka).toMutableList()
             }
         })
 
         biljkeAdapter2.setOnItemClickListener(object : BiljkaAdapterBotanicka.OnItemClickListener {
             override fun onItemClick(biljka: Biljka) {
-                filtriranaLista=biljkeAdapter2.filterByCriteria(biljka)
+                filtriranaLista= biljkeAdapter2.filterByCriteria(biljka).toMutableList()
             }
         })
 
         biljkeAdapter3.setOnItemClickListener(object : BiljkaAdapterKuharska.OnItemClickListener {
             override fun onItemClick(biljka: Biljka) {
-                filtriranaLista=biljkeAdapter3.filterByCriteria(biljka)
+                filtriranaLista= biljkeAdapter3.filterByCriteria(biljka).toMutableList()
             }
         })
         var resetButton:Button;
@@ -104,7 +105,110 @@ class MainActivity : AppCompatActivity() {
             biljkeAdapter1.updateBiljke(biljke)
             biljkeAdapter2.updateBiljke(biljke)
             biljkeAdapter3.updateBiljke(biljke)
-            filtriranaLista= emptyList()
+            filtriranaLista= mutableListOf()
         }
+
+        //dodavanje nove
+        var dodajButton=findViewById<Button>(R.id.novaBiljkaBtn)
+        dodajButton.setOnClickListener{
+            var otvori_dodajIntent= Intent(this,NovaBiljkaActivity::class.java);
+            startActivity(otvori_dodajIntent)
+        }
+
+        val extras=intent.extras
+        if (extras != null) {
+            //onda treba napravit biljku i dodat je
+            val naziv2=extras.getString("naziv")
+            val porodica2=extras.getString("porodica")
+            val medicinskoUpozorenje2=extras.getString("medicinskoUpozorenje")
+            val profilOkusa=extras.getString("profilOkusa")
+            val medicinskeKoristiTekst=extras.getString("medicinskeKoristi")
+            val klimatskiTipoviTekst=extras.getString("klimatskiTipovi")
+            val zemljisniTipoviTekst=extras.getString("zemljisniTipovi")
+            val jelaTekst=extras.getString("jelaBiljke")
+
+            //pravljenje listi
+            val Okus2 : ProfilOkusaBiljke
+            if(profilOkusa?.contains("Gorak") == true)
+            {
+                Okus2=ProfilOkusaBiljke.GORKO
+            }else if(profilOkusa?.contains("Sladak") == true)
+            {
+                Okus2=ProfilOkusaBiljke.SLATKI
+            }else if(profilOkusa?.contains("Citrusni") == true)
+            {
+                Okus2=ProfilOkusaBiljke.CITRUSNI
+            }else if(profilOkusa?.contains("Mentol") == true)
+            {
+                Okus2=ProfilOkusaBiljke.MENTA
+            }else if(profilOkusa?.contains("Obični biljni okus") == true)
+            {
+                Okus2=ProfilOkusaBiljke.BEZUKUSNO
+            }else if(profilOkusa?.contains("Ljuto") == true)
+            {
+                Okus2=ProfilOkusaBiljke.LJUTO
+            }else if(profilOkusa?.contains("Začinski") == true)
+            {
+                Okus2=ProfilOkusaBiljke.AROMATICNO
+            }else {
+                Okus2=ProfilOkusaBiljke.KORIJENASTO
+            }
+
+            val medicinskeKoristiLista = mutableListOf<MedicinskaKorist>()
+            if (medicinskeKoristiTekst != null) {
+                if(medicinskeKoristiTekst.contains("Smirenje")) medicinskeKoristiLista.add(MedicinskaKorist.SMIRENJE)
+                if(medicinskeKoristiTekst.contains("Protuupalno")) medicinskeKoristiLista.add(MedicinskaKorist.PROTUUPALNO)
+                if(medicinskeKoristiTekst.contains("Protivbolova")) medicinskeKoristiLista.add(MedicinskaKorist.PROTIVBOLOVA)
+                if(medicinskeKoristiTekst.contains("imunitetu")) medicinskeKoristiLista.add(MedicinskaKorist.PODRSKAIMUNITETU)
+                if(medicinskeKoristiTekst.contains("probave")) medicinskeKoristiLista.add(MedicinskaKorist.REGULACIJAPROBAVE)
+                if(medicinskeKoristiTekst.contains("pritiska")) medicinskeKoristiLista.add(MedicinskaKorist.REGULACIJAPRITISKA)
+            }
+
+            val klimatskiTipoviLista = mutableListOf<KlimatskiTip>()
+            if(klimatskiTipoviTekst!=null)
+            {
+                if(klimatskiTipoviTekst.contains("Umjerena klima")) klimatskiTipoviLista.add(KlimatskiTip.UMJERENA)
+                if(klimatskiTipoviTekst.contains("Sušna klima")) klimatskiTipoviLista.add(KlimatskiTip.SUHA)
+                if(klimatskiTipoviTekst.contains("Tropska")) klimatskiTipoviLista.add(KlimatskiTip.TROPSKA)
+                if(klimatskiTipoviTekst.contains("Mediteranska")) klimatskiTipoviLista.add(KlimatskiTip.SREDOZEMNA)
+                if(klimatskiTipoviTekst.contains("Subtropska")) klimatskiTipoviLista.add(KlimatskiTip.SUBTROPSKA)
+                if(klimatskiTipoviTekst.contains("Planinska")) klimatskiTipoviLista.add(KlimatskiTip.PLANINSKA)
+            }
+
+            val zemljisniTipoviLista = mutableListOf<Zemljiste>()
+            if(zemljisniTipoviTekst!=null)
+            {
+                if(zemljisniTipoviTekst.contains("Krečnjačko")) zemljisniTipoviLista.add(Zemljiste.KRECNJACKO)
+                if(zemljisniTipoviTekst.contains("Crnica")) zemljisniTipoviLista.add(Zemljiste.CRNICA)
+                if(zemljisniTipoviTekst.contains("Glineno")) zemljisniTipoviLista.add(Zemljiste.GLINENO)
+                if(zemljisniTipoviTekst.contains("Ilovača")) zemljisniTipoviLista.add(Zemljiste.ILOVACA)
+                if(zemljisniTipoviTekst.contains("Pjeskovito")) zemljisniTipoviLista.add(Zemljiste.PJESKOVITO)
+                if(zemljisniTipoviTekst.contains("Šljunovito")) zemljisniTipoviLista.add(Zemljiste.SLJUNKOVITO)
+            }
+
+            val listaJela = mutableListOf<String>()
+            var trenutniString = ""
+            if (jelaTekst != null) {
+                for (char in jelaTekst) {
+                    if (char != '*') {
+                        trenutniString += char
+                    } else {
+                        listaJela.add(trenutniString.trim())
+                        trenutniString = ""
+                    }
+                }
+            }
+
+            val novabiljka=Biljka(naziv=naziv2.toString(),porodica=porodica2.toString(),
+                medicinskoUpozorenje=medicinskoUpozorenje2.toString(),medicinskeKoristi=medicinskeKoristiLista.toList(),
+                profilOkusa=Okus2,jela= listaJela.toList(), klimatskiTipovi = klimatskiTipoviLista.toList(),
+                zemljisniTipovi = zemljisniTipoviLista.toList())
+            if(naziv2!=null) dodajNoveBiljke(novabiljka)
+            biljke= getBiljke()
+            biljkeAdapter1.updateBiljke(biljke)
+            biljkeAdapter2.updateBiljke(biljke)
+            biljkeAdapter3.updateBiljke(biljke)
+            biljkeView.adapter=biljkeAdapter1
+        };
     }
 }

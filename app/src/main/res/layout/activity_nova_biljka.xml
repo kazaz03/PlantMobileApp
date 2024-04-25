@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/main"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".NovaBiljkaActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/linija4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/linija3"
+            android:orientation="vertical"
+            android:background="#D39595">
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginEnd="15dp"
+                android:textStyle="bold"
+                android:text="@string/unos"
+                android:textSize="15sp"
+                android:textColor="@color/black"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="15dp"
+                />
+
+            <LinearLayout
+                android:id="@+id/linija5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/nazivET"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="45dp"
+                    android:layout_marginStart="15sp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="20dp"
+                    android:background="#CCBABA"
+                    android:textColorHint="#4A4545"
+                    android:hint="@string/unos_naziva"
+                    android:inputType="text"
+                    android:textSize="15sp"
+                    android:textColor="@color/black"/>
+
+                <EditText
+                    android:id="@+id/porodicaET"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="45dp"
+                    android:layout_marginStart="15sp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginTop="20dp"
+                    android:hint="@string/unos_porodice"
+                    android:inputType="text"
+                    android:background="#CCBABA"
+                    android:textColor="@color/black"
+                    android:textColorHint="#4A4545"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/medicinskoUpozorenjeET"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginStart="15dp"
+                android:background="#CCBABA"
+                android:textColor="@color/black"
+                android:textColorHint="#4A4545"
+                android:inputType="text"
+                android:textSize="15sp"
+                android:hint="@string/unos_medicinsko" />
+
+            <EditText
+                android:id="@+id/jeloET"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginStart="15dp"
+                android:hint="@string/unos_jela"
+                android:layout_marginEnd="15dp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="10dp"
+                android:textSize="15sp"
+                android:background="#CCBABA"
+                android:textColorHint="#4A4545"
+                android:inputType="text" />
+
+            <TextView
+                android:id="@+id/tekstJelo"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginEnd="15dp"
+                android:textStyle="bold"
+                android:text="@string/odabir_okusa"
+                android:textSize="15sp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="15dp"/>
+
+
+            <ListView
+                android:id="@+id/profilOkusaLV"
+                android:layout_width="match_parent"
+                android:layout_height="395dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:background="#CCBABA"
+                android:choiceMode="singleChoice"
+                android:nestedScrollingEnabled="true"/>
+
+            <TextView
+                android:id="@+id/medicinaTekst"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginEnd="15dp"
+                android:textSize="15sp"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="15dp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="10dp"
+                android:textStyle="bold"
+                android:text="@string/medicina" />
+
+            <ListView
+                android:id="@+id/medicinskaKoristLV"
+                android:layout_width="match_parent"
+                android:layout_height="295dp"
+                android:background="#CCBABA"
+                android:choiceMode="multipleChoice"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:nestedScrollingEnabled="true"/>
+
+            <TextView
+                android:id="@+id/klimaUnos"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:text="@string/klimaodabir"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="15dp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="10dp"
+                />
+
+            <ListView
+                android:id="@+id/klimatskiTipLV"
+                android:layout_width="match_parent"
+                android:layout_height="295dp"
+                android:background="#CCBABA"
+                android:choiceMode="multipleChoice"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:nestedScrollingEnabled="true"/>
+
+            <TextView
+                android:id="@+id/zemljaUnos"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:text="@string/zemljaodabir"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="15dp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="10dp"
+                />
+
+            <ListView
+                android:id="@+id/zemljisnjiTipLV"
+                android:layout_width="match_parent"
+                android:layout_height="295dp"
+                android:background="#CCBABA"
+                android:choiceMode="multipleChoice"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:nestedScrollingEnabled="true"/>
+
+            <TextView
+                android:id="@+id/tekstjelaLista"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginEnd="15dp"
+                android:textStyle="bold"
+                android:text="@string/listajela"
+                android:textSize="15sp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="15dp"/>
+
+            <ListView
+                android:id="@+id/jelaLV"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="#CCBABA"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:nestedScrollingEnabled="true"/>
+
+            <Button
+                android:id="@+id/dodajJeloBtn"
+                android:layout_width="180dp"
+                android:layout_height="55dp"
+                android:layout_marginTop="15dp"
+                android:layout_gravity="center"
+                android:textSize="15sp"
+                android:textColor="@color/black"
+                android:text="@string/dodajjelo"
+                android:layout_marginBottom="10dp"/>
+
+            <LinearLayout
+                android:id="@+id/linija6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/dodajBiljkuBtn"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="55dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="15dp"
+                    android:text="@string/dodajbiljku"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:textColor="@color/black"/>
+
+                <Button
+                    android:id="@+id/uslikajBiljkuBtn"
+                    android:layout_height="55dp"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/uslikajbiljku"
+                    android:textColor="@color/black"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/slikaIV"
+                android:layout_width="300dp"
+                android:layout_height="250dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="30dp"
+                android:scaleType="fitCenter" />
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linija3"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@color/roza"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/formanaziv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/form"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:layout_gravity="start"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

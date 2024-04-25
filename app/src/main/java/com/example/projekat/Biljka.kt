@@ -1,5 +1,8 @@
 package com.example.projekat
 
+import android.os.Parcelable
+import java.io.Serializable
+
 data class Biljka(
     val naziv:String,
     val porodica: String,
@@ -9,4 +12,4 @@ data class Biljka(
     val jela: List<String>,
     val klimatskiTipovi: List<KlimatskiTip>,
     val zemljisniTipovi: List<Zemljiste>
-)
+)//: Serializable
