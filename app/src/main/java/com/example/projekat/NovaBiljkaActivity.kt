@@ -59,6 +59,8 @@ class NovaBiljkaActivity : AppCompatActivity() {
     private lateinit var scrollView : ScrollView
 
     private lateinit var slikaIV : ImageView
+
+    private var obrisan: Boolean=false
     @SuppressLint("QueryPermissionsNeeded")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -151,10 +153,11 @@ class NovaBiljkaActivity : AppCompatActivity() {
 
         dodajJeloBtn.setOnClickListener{
             var opcija=dodajJeloBtn.text
-            if(!postojiJelo(jeloET.text.toString())) {
+            var tekst=jeloET.text
+            if(!postojiJelo(tekst.toString())) {
                 if (opcija.equals("Dodaj jelo")) {
                     //ako je na dodaj jelo
-                    if (jeloET.text.toString().length !in 2..20) {
+                    if (tekst.toString().length !in 2..20) {
                         jeloET.error = "Jelo mora imati između 2 i 20 znakova"
                     }else  {
                     listaDodanihJela.add(jeloET.text.toString())
@@ -167,7 +170,7 @@ class NovaBiljkaActivity : AppCompatActivity() {
                     }
                     }
                 } else {
-                    if (jeloET.text.equals("")) {
+                    if (tekst.isEmpty()) {
                         listaDodanihJela.removeAt(indexOdabranog)
                         adapterJela.notifyDataSetChanged() //za brisanje
                         jelaLV.post {
@@ -179,7 +182,7 @@ class NovaBiljkaActivity : AppCompatActivity() {
                         dodajJeloBtn.text = "Dodaj jelo"
                         jeloET.setText("")
                     } else {
-                        if (jeloET.text.toString().length !in 2..20) {
+                        if (tekst.toString().length !in 2..20) {
                             jeloET.error = "Jelo mora imati između 2 i 20 znakova"
                         }else
                         {
