@@ -1,11 +1,12 @@
 package com.example.projekat
 
-import ToastMatcher
 import android.content.Intent
-import androidx.recyclerview.widget.RecyclerView
+import android.os.IBinder
+import android.view.View
+import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ActivityScenario.ActivityAction
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.app.launchActivity
-import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.clearText
 import androidx.test.espresso.action.ViewActions.click
@@ -14,27 +15,26 @@ import androidx.test.espresso.action.ViewActions.swipeDown
 import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.RootMatchers.withDecorView
-import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.hasErrorText
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.hamcrest.CoreMatchers.allOf
-import org.hamcrest.CoreMatchers.containsString
-import org.hamcrest.CoreMatchers.instanceOf
-import org.hamcrest.CoreMatchers.not
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.core.Is
-import org.hamcrest.number.OrderingComparison.greaterThan
+import org.hamcrest.Matchers
+import org.hamcrest.Matchers.not
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import android.view.Window
+import android.view.WindowManager
+import androidx.test.espresso.Root
+import org.hamcrest.Description
+import org.hamcrest.TypeSafeMatcher
+import ToastMatcher
+
 
 @RunWith(AndroidJUnit4::class)
 class TestiranjeValidacije {
@@ -43,8 +43,6 @@ class TestiranjeValidacije {
     @Test
     fun PrekratakNaziv()
     {
-        //provjera je li se postavi error kad ima manje od 3 il vise od 19 karaktera
-        //pokretanje nove aktivnosti
         val pokreniDetalje= Intent(ApplicationProvider.getApplicationContext(),NovaBiljkaActivity::class.java)
         launchActivity<NovaBiljkaActivity>(pokreniDetalje)
         val tekstZaPopunit1="b"
@@ -160,8 +158,7 @@ class TestiranjeValidacije {
         onView(withId(R.id.jeloET)).perform(typeText(kopija), closeSoftKeyboard())
         onView(withId(R.id.main)).perform(swipeUp())
         onView(withId(R.id.dodajJeloBtn)).perform(click())
-        // Provjerite je li Toast poruka prikazana
-        onView(withText(errorPoruka)).inRoot(ToastMatcher()).check(matches(isDisplayed()))
+        onView(withText("Jelo je već dodano u listi")).inRoot( ToastMatcher()).check(matches(withText(errorPoruka)))
     }
     /*@Test
     fun PrikazSlikeUImageView()
