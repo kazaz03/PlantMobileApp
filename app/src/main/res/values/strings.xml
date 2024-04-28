@@ -32,4 +32,11 @@
     <string name="dodajjelo">Dodaj jelo</string>
      <string name="dodajbiljku">Dodaj biljku</string>
     <string name="uslikajbiljku">Uslikaj biljku</string>
+    <string name="okusError">Mora biti odabran jedan okus</string>
+    <string name="medicinskaKoristError">Mora biti odabrana bar jedna medicinska korist</string>
+    <string name="klimatskiError">Mora biti odabrana bar jedna klima</string>
+    <string name="zemljisniError">Mora biti odabrano bar jedno zemljiste</string>
+    <string name="praznaError">Mora biti dodano barem jedno jelo u listi jela</string>
+    <string name="duplikatError">Jelo je već dodano u listi</string>
+    <string name="dozvolaKamereError">Dozvola za kameru je odbijena</string>
 </resources>

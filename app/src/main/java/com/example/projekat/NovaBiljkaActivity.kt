@@ -16,7 +16,6 @@ import android.widget.ImageView
 import android.widget.ListView
 import android.widget.ScrollView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -24,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import android.Manifest
+import android.view.View
 
 class NovaBiljkaActivity : AppCompatActivity() {
 
@@ -54,13 +54,16 @@ class NovaBiljkaActivity : AppCompatActivity() {
     private lateinit var jeloET : EditText
 
     private lateinit var adapterJela : ArrayAdapter<String>
-    private lateinit var odabranoJelo : String
-
     private lateinit var scrollView : ScrollView
-
     private lateinit var slikaIV : ImageView
 
-    private var obrisan: Boolean=false
+    private lateinit var profilOkusaError: TextView
+    private lateinit var medicinskaKoristError:TextView
+    private lateinit var klimatskiTipError: TextView
+    private lateinit var zemljisniTipError: TextView
+    private lateinit var praznaListaJelaError: TextView
+    private lateinit var duplikatJelaError: TextView
+    private lateinit var dozvolaError: TextView
     @SuppressLint("QueryPermissionsNeeded")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,9 +75,16 @@ class NovaBiljkaActivity : AppCompatActivity() {
             insets
         }
 
+        profilOkusaError=findViewById(R.id.profilOkusaError)
+        medicinskaKoristError=findViewById(R.id.medicinskaKoristError)
+        klimatskiTipError=findViewById(R.id.klimatskiTipError)
+        zemljisniTipError=findViewById(R.id.zemljisniTipError)
+        praznaListaJelaError=findViewById(R.id.praznaListaJelaError)
+        duplikatJelaError=findViewById(R.id.duplikatJelaError)
+        dozvolaError=findViewById(R.id.dozvolaError)
+
         slikaIV=findViewById(R.id.slikaIV)
         scrollView=findViewById(R.id.main)
-
         jelaLV=findViewById(R.id.jelaLV)
         dodajJeloBtn=findViewById(R.id.dodajJeloBtn)
         dodajBiljkuBtn=findViewById(R.id.dodajBiljkuBtn)
@@ -139,7 +149,6 @@ class NovaBiljkaActivity : AppCompatActivity() {
         adapterJela=ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,listaDodanihJela)
         jelaLV.adapter=adapterJela
 
-        //pitat kako namjestit da mi se ne pomjera ova scroll view
 
         var odabranoJelo : String
         var indexOdabranog =-1
@@ -160,6 +169,7 @@ class NovaBiljkaActivity : AppCompatActivity() {
                     if (tekst.toString().length !in 2..20) {
                         jeloET.error = "Jelo mora imati između 2 i 20 znakova"
                     }else  {
+                        praznaListaJelaError.visibility=View.GONE
                     listaDodanihJela.add(jeloET.text.toString())
                     adapterJela.notifyDataSetChanged()
                     jelaLV.post {
@@ -202,10 +212,15 @@ class NovaBiljkaActivity : AppCompatActivity() {
             }
         }
 
-        //dodavanje biljke prvo validacija pa vracanje na main
         dodajBiljkuBtn.setOnClickListener{
             if(validacija())
             {
+                medicinskaKoristError.visibility= View.GONE
+                profilOkusaError.visibility=View.GONE
+                klimatskiTipError.visibility=View.GONE
+                zemljisniTipError.visibility=View.GONE
+                praznaListaJelaError.visibility=View.GONE
+                duplikatJelaError.visibility=View.GONE
                 val intent= Intent(this,MainActivity::class.java)
                 //moze se implementirat kao serializable i onda poslaz samo biljka
                 intent.putExtra("naziv",unosNaziva.text.toString())
@@ -271,16 +286,14 @@ class NovaBiljkaActivity : AppCompatActivity() {
                 intent.putExtra("jelaBiljke",odabranaJela.toString())
                 startActivity(intent)
             }else {
-                //Toast.makeText(this,"Nije pravilan unos",Toast.LENGTH_SHORT).show()
+
             }
         }
 
         uslikajBiljkuBtn.setOnClickListener {
             if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(arrayOf(Manifest.permission.CAMERA), REQUEST_IMAGE_CAPTURE)
-                //ako nije pruzen access zatrazit ga
             } else {
-                //ako je pruzen pokreni slikanje
                 dispatchTakePictureIntent()
             }
         }
@@ -291,9 +304,11 @@ class NovaBiljkaActivity : AppCompatActivity() {
         //provjerit u listi dodanih jela
         if(listaDodanihJela.any{it.lowercase()==jelo.lowercase()})
         {
-            Toast.makeText(this,"Jelo je već dodano u listi",Toast.LENGTH_LONG).show()
+            duplikatJelaError.visibility=View.VISIBLE
+            duplikatJelaError.error="Jelo je već dodano u listi"
             return true
         }
+        duplikatJelaError.visibility=View.GONE
         return false
     }
 
@@ -302,17 +317,16 @@ class NovaBiljkaActivity : AppCompatActivity() {
         takePictureIntent.resolveActivity(packageManager)?.also {
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
         }
-        /*
-        * provjerili postoji li aplikacija koja može obraditi
-        * taj intent prije nego što pokrenemo aktivnost kamerom.*/
     }
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_IMAGE_CAPTURE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                dozvolaError.visibility=View.GONE
                 dispatchTakePictureIntent()
             } else {
-                Toast.makeText(this, "Dozvola za kameru je odbijena", Toast.LENGTH_SHORT).show()
+                dozvolaError.error="Dozvola za kameru je odbijena"
+                dozvolaError.visibility=View.VISIBLE
             }
         }
     }
@@ -323,14 +337,12 @@ class NovaBiljkaActivity : AppCompatActivity() {
             val imageBitmap = data?.extras?.get("data") as Bitmap
             slikaIV.setImageBitmap(imageBitmap)
         }
-        //odgovor na intent
     }
 
     private fun validacija(): Boolean
     {
         val naziv=unosNaziva.text.toString()
         val porodica=unosPorodice.text.toString()
-        val jelo=jeloET.text.toString()
         val medicinskoUpozorenje=unosMedicinskogUpozorenja.text.toString()
         var validno=true
 
@@ -342,65 +354,48 @@ class NovaBiljkaActivity : AppCompatActivity() {
             unosPorodice.error="Porodica mora imati između 2 i 20 znakova"
             validno = false
         }
-        if(ImaDuplikata(listaDodanihJela))
-        {
-            Toast.makeText(this,"Jelo je već dodano u listi",Toast.LENGTH_LONG).show()
-            validno=false
-        }
-        /*if (jelo.length !in 2..20) {
-            jeloET.error = "Jelo mora imati između 2 i 20 znakova"
-            validno= false
-        }*/
         if (medicinskoUpozorenje.length !in 2..20) {
             unosMedicinskogUpozorenja.error="Upozorenje mora imat između 2 i 20 znakova"
             validno = false
         }
         if(!nestaOdabrano(listaKoristi))
         {
-            Toast.makeText(this,"Mora biti odabrana bar jedna korist",Toast.LENGTH_LONG).show()
+            medicinskaKoristError.visibility=View.VISIBLE
+            medicinskaKoristError.error="Mora biti odabrana bar jedna medicinska korist"
             validno=false
-        }
+        }else  medicinskaKoristError.visibility= View.GONE
         if(!nestaOdabrano(listaKlima))
         {
-            Toast.makeText(this,"Mora biti odabrana bar jedna klima",Toast.LENGTH_LONG).show()
+            klimatskiTipError.visibility=View.VISIBLE
+            klimatskiTipError.error="Mora biti odabrana bar jedna klima"
             validno=false
-        }
+        }else klimatskiTipError.visibility=View.GONE
         if(!nestaOdabrano(listaZemljista))
         {
-            Toast.makeText(this,"Mora biti odabrano bar jedno zemljiste",Toast.LENGTH_LONG).show()
+            zemljisniTipError.error="Mora biti odabrano bar jedno zemljiste"
+            zemljisniTipError.visibility=View.VISIBLE
             validno=false
-        }
+        }else zemljisniTipError.visibility=View.GONE
         if(listaDodanihJela.isEmpty())
         {
-            Toast.makeText(this,"Mora biti dodano barem jedno jelo u listi jela",Toast.LENGTH_LONG).show()
+            praznaListaJelaError.error="Mora biti dodano barem jedno jelo u listi jela"
+            praznaListaJelaError.visibility=View.VISIBLE
             validno=false
-        }
+        }else praznaListaJelaError.visibility=View.GONE
 
         val odabrani=listaOkusa.checkedItemCount
         if(odabrani<1 || odabrani>1) {
-            Toast.makeText(this,"Mora biti odabran jedan okus",Toast.LENGTH_LONG).show()
+            profilOkusaError.visibility=View.VISIBLE
+            profilOkusaError.error="Mora biti odabran jedan okus"
             validno=false
-        }
+        }else profilOkusaError.visibility=View.GONE
         return validno
-    }
-
-    private fun ImaDuplikata(list: List<String>): Boolean{
-        val set = mutableSetOf<String>()
-        for (element in list) {
-            val lowercaseElement = element.lowercase()
-            if (set.contains(lowercaseElement)) {
-                return true
-            } else {
-                set.add(lowercaseElement)
-            }
-        }
-        return false
     }
 
     private fun nestaOdabrano(listView: ListView):Boolean{
         for (i in 0 until listView.count) {
             if (listView.isItemChecked(i)) {
-                return true // Pronađena je barem jedna odabrana vrijednost
+                return true
             }
         }
         return false

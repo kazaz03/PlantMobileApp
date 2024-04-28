@@ -60,4 +60,7 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit-ktx:1.1.5")
     testImplementation("org.hamcrest:hamcrest:x.y")
     testImplementation("org.hamcrest:hamcrest:2.2")
+    androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
+
+    androidTestImplementation("androidx.test:rules:1.4.0")
 }
