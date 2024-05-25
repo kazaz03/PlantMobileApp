@@ -14,6 +14,10 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private var filtriranaLista: MutableList<Biljka> = mutableListOf()
@@ -22,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var biljkeAdapter2: BiljkaAdapterBotanicka
     private lateinit var biljkeAdapter3: BiljkaAdapterKuharska
     private var biljke = getBiljke()
+    private val trefleDAO=TrefleDAO()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -201,8 +206,12 @@ class MainActivity : AppCompatActivity() {
 
             val novabiljka=Biljka(naziv=naziv2.toString(),porodica=porodica2.toString(),
                 medicinskoUpozorenje=medicinskoUpozorenje2.toString(),medicinskeKoristi=medicinskeKoristiLista.toList(),
-                profilOkusa=Okus2,jela= listaJela.toList(), klimatskiTipovi = klimatskiTipoviLista.toList(),
+                profilOkusa=Okus2,jela= listaJela.toList().toMutableList(), klimatskiTipovi = klimatskiTipoviLista.toList(),
                 zemljisniTipovi = zemljisniTipoviLista.toList())
+            val scope= CoroutineScope(Job() + Dispatchers.Main)
+            scope.launch{
+                trefleDAO.fixData(novabiljka)
+            }
             if(naziv2!=null) dodajNoveBiljke(novabiljka)
             biljke= getBiljke()
             biljkeAdapter1.updateBiljke(biljke)

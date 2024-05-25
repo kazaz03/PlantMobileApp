@@ -1,11 +1,17 @@
 package com.example.projekat
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import com.example.projekat.TrefleDAO
 
 class BiljkaAdapterMedicinska(var biljke: List<Biljka>): RecyclerView.Adapter<BiljkaAdapterMedicinska.BiljkaViewHolder>() {
 
@@ -25,6 +31,8 @@ class BiljkaAdapterMedicinska(var biljke: List<Biljka>): RecyclerView.Adapter<Bi
     //interfejs za klik
 
     private var itemClickListener: OnItemClickListener? = null
+
+    private var trefleDAO=TrefleDAO()
 
     interface OnItemClickListener {
         fun onItemClick(biljka: Biljka)
@@ -54,10 +62,12 @@ class BiljkaAdapterMedicinska(var biljke: List<Biljka>): RecyclerView.Adapter<Bi
 
     override fun onBindViewHolder(holder: BiljkaViewHolder, position: Int) {
         val biljka=biljke[position];
-        val ImageId = getImageId(biljka.naziv)
-        if (ImageId != null) {
-            holder.slikaBiljke.setImageResource(ImageId)
+        val scope = CoroutineScope(Job() + Dispatchers.Main)
+        scope.launch{
+            val image=trefleDAO.getImage(biljka)
+            holder.slikaBiljke.setImageBitmap(image)
         }
+
         holder.nazivBiljke.text=biljka.naziv;
         try
         {

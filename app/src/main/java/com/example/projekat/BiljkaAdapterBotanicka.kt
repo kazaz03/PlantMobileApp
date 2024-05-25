@@ -6,6 +6,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class BiljkaAdapterBotanicka(var biljke: List<Biljka>): RecyclerView.Adapter<BiljkaAdapterBotanicka.BiljkaViewHolder>() {
     val tipSlike = mapOf(
@@ -22,6 +26,8 @@ class BiljkaAdapterBotanicka(var biljke: List<Biljka>): RecyclerView.Adapter<Bil
     )
 
     private var itemClickListener: OnItemClickListener? = null
+
+    private var trefleDAO=TrefleDAO()
 
     interface OnItemClickListener {
         fun onItemClick(biljka: Biljka)
@@ -50,10 +56,17 @@ class BiljkaAdapterBotanicka(var biljke: List<Biljka>): RecyclerView.Adapter<Bil
 
     override fun onBindViewHolder(holder: BiljkaViewHolder, position: Int) {
         val biljka=biljke[position];
-        val ImageId = getImageId(biljka.naziv)
+        /*val ImageId = getImageId(biljka.naziv)
         if (ImageId != null) {
             holder.slikaBiljke.setImageResource(ImageId)
+        }*/
+
+        val scope = CoroutineScope(Job() + Dispatchers.Main)
+        scope.launch{
+            val image=trefleDAO.getImage(biljka)
+            holder.slikaBiljke.setImageBitmap(image)
         }
+
         holder.nazivBiljke.text=biljka.naziv;
         holder.porodica.text=biljka.porodica
         try
@@ -105,5 +118,11 @@ class BiljkaAdapterBotanicka(var biljke: List<Biljka>): RecyclerView.Adapter<Bil
         it.porodica==porodica}
         notifyDataSetChanged()
         return biljke.toList()
+    }
+
+    fun getLatinskiNaziv(puniNaziv: String): String?{
+        val pattern = "\\((.*?)\\)".toRegex()
+        val matchResult = pattern.find(puniNaziv)
+        return matchResult?.groupValues?.get(1)
     }
 }

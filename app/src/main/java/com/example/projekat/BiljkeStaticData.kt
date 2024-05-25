@@ -7,9 +7,9 @@ val biljkestatic = listOf(
         medicinskoUpozorenje = "Može iritati kožu osjetljivu na sunce. Preporučuje se oprezna upotreba pri korištenju ulja bosiljka.",
         medicinskeKoristi = listOf(MedicinskaKorist.SMIRENJE, MedicinskaKorist.REGULACIJAPROBAVE),
         profilOkusa = ProfilOkusaBiljke.BEZUKUSNO,
-        jela = listOf("Salata od paradajza", "Punjene tikvice"),
+        jela = mutableListOf("Salata od paradajza", "Punjene tikvice"),
         klimatskiTipovi = listOf(KlimatskiTip.SREDOZEMNA, KlimatskiTip.SUBTROPSKA),
-        zemljisniTipovi = listOf(Zemljiste.PJESKOVITO, Zemljiste.ILOVACA)
+        zemljisniTipovi = mutableListOf(Zemljiste.PJESKOVITO, Zemljiste.ILOVACA)
     ),
     Biljka(
         naziv = "Nana (Mentha spicata)",
@@ -18,9 +18,9 @@ val biljkestatic = listOf(
         medicinskeKoristi = listOf(MedicinskaKorist.PROTUUPALNO,
             MedicinskaKorist.PROTIVBOLOVA),
         profilOkusa = ProfilOkusaBiljke.MENTA,
-        jela = listOf("Jogurt sa voćem", "Gulaš"),
+        jela = mutableListOf("Jogurt sa voćem", "Gulaš"),
         klimatskiTipovi = listOf(KlimatskiTip.SREDOZEMNA, KlimatskiTip.UMJERENA),
-        zemljisniTipovi = listOf(Zemljiste.GLINENO, Zemljiste.CRNICA)
+        zemljisniTipovi = mutableListOf(Zemljiste.GLINENO, Zemljiste.CRNICA)
     ),
     Biljka(
         naziv = "Kamilica (Matricaria chamomilla)",
@@ -29,9 +29,9 @@ val biljkestatic = listOf(
         medicinskeKoristi = listOf(MedicinskaKorist.SMIRENJE,
             MedicinskaKorist.PROTUUPALNO),
         profilOkusa = ProfilOkusaBiljke.AROMATICNO,
-        jela = listOf("Čaj od kamilice"),
+        jela = mutableListOf("Čaj od kamilice"),
         klimatskiTipovi = listOf(KlimatskiTip.UMJERENA, KlimatskiTip.SUBTROPSKA),
-        zemljisniTipovi = listOf(Zemljiste.PJESKOVITO, Zemljiste.KRECNJACKO)
+        zemljisniTipovi = mutableListOf(Zemljiste.PJESKOVITO, Zemljiste.KRECNJACKO)
     ),
     Biljka(
         naziv = "Ružmarin (Rosmarinus officinalis)",
@@ -40,9 +40,9 @@ val biljkestatic = listOf(
         medicinskeKoristi = listOf(MedicinskaKorist.PROTUUPALNO,
             MedicinskaKorist.REGULACIJAPRITISKA),
         profilOkusa = ProfilOkusaBiljke.AROMATICNO,
-        jela = listOf("Pečeno pile", "Grah","Gulaš"),
+        jela = mutableListOf("Pečeno pile", "Grah","Gulaš"),
         klimatskiTipovi = listOf(KlimatskiTip.SREDOZEMNA, KlimatskiTip.SUHA),
-        zemljisniTipovi = listOf(Zemljiste.SLJUNKOVITO, Zemljiste.KRECNJACKO)
+        zemljisniTipovi = mutableListOf(Zemljiste.SLJUNKOVITO, Zemljiste.KRECNJACKO)
     ),
     Biljka(
         naziv = "Lavanda (Lavandula angustifolia)",
@@ -51,9 +51,9 @@ val biljkestatic = listOf(
         medicinskeKoristi = listOf(MedicinskaKorist.SMIRENJE,
             MedicinskaKorist.PODRSKAIMUNITETU),
         profilOkusa = ProfilOkusaBiljke.AROMATICNO,
-        jela = listOf("Jogurt sa voćem"),
+        jela = mutableListOf("Jogurt sa voćem"),
         klimatskiTipovi = listOf(KlimatskiTip.SREDOZEMNA, KlimatskiTip.SUHA),
-        zemljisniTipovi = listOf(Zemljiste.PJESKOVITO, Zemljiste.KRECNJACKO)
+        zemljisniTipovi = mutableListOf(Zemljiste.PJESKOVITO, Zemljiste.KRECNJACKO)
     ),
     Biljka(naziv="Aloe vera (Aloe Barbadensis)",
         porodica="Asphodelaceae (čepljezovke)",
@@ -61,43 +61,43 @@ val biljkestatic = listOf(
                 "uzrokovati probavne smetnje ili interakcije s lijekovima. Trudnice, dojilje i osobe s kroničnim bolestima trebaju se posavjetovati s liječnikom prije upotrebe.",
         medicinskeKoristi = listOf(MedicinskaKorist.PROTUUPALNO,MedicinskaKorist.SMIRENJE),
         profilOkusa=ProfilOkusaBiljke.GORKO,
-        jela=listOf("Morska hrana","Smoothie","Salata"),
+        jela=mutableListOf("Morska hrana","Smoothie","Salata"),
         klimatskiTipovi = listOf(KlimatskiTip.SUHA,KlimatskiTip.TROPSKA),
-        zemljisniTipovi=listOf(Zemljiste.PJESKOVITO,Zemljiste.KRECNJACKO)),
+        zemljisniTipovi=mutableListOf(Zemljiste.PJESKOVITO,Zemljiste.KRECNJACKO)),
 
     Biljka(naziv="Đumbir (Zingiber officinale)",porodica="Zingiberaceae (liliopside)",
         medicinskoUpozorenje="Đumbir može interagirati s određenim lijekovima, pa je važno konzultirati se s liječnikom prije konzumacije, posebno ako uzimate lijekove za razrjeđivanje krvi ili regulaciju šećera u krvi. " +
                 "Trudnice i dojilje trebaju izbjegavati veće količine đumbira i konzultirati se s liječnikom prije konzumacije.",
         medicinskeKoristi = listOf(MedicinskaKorist.REGULACIJAPROBAVE),
         profilOkusa=ProfilOkusaBiljke.LJUTO,
-        jela=listOf("Čaj","Marinirana piletina s đumbirom","Pečena riba","Kolači"),
+        jela=mutableListOf("Čaj","Marinirana piletina s đumbirom","Pečena riba","Kolači"),
         klimatskiTipovi = listOf(KlimatskiTip.SUHA,KlimatskiTip.SREDOZEMNA),
-        zemljisniTipovi = listOf(Zemljiste.GLINENO)),
+        zemljisniTipovi = mutableListOf(Zemljiste.GLINENO)),
 
     Biljka(naziv="Hibiskus (Rosa Sinensis)",porodica="Malvaceae (sljez)",
         medicinskoUpozorenje="Hibiskus može djelovati kao diuretik (povećava mokrenje) i smanjiti krvni tlak. Stoga, osobe koje uzimaju lijekove za regulaciju krvnog tlaka ili diuretike trebale bi se posavjetovati sa svojim liječnikom prije konzumiranja hibiskusa kako bi izbjegli moguće interakcije lijekova.",
         medicinskeKoristi = listOf(MedicinskaKorist.PROTUUPALNO),
         profilOkusa=ProfilOkusaBiljke.SLATKI,
-        jela=listOf("Salata","Džem od hibiskusa","Hibiskusni umak"),
+        jela=mutableListOf("Salata","Džem od hibiskusa","Hibiskusni umak"),
         klimatskiTipovi = listOf(KlimatskiTip.UMJERENA,KlimatskiTip.SREDOZEMNA),
-        zemljisniTipovi = listOf(Zemljiste.CRNICA)),
+        zemljisniTipovi = mutableListOf(Zemljiste.CRNICA)),
     Biljka(naziv="Limun (Citrus Limon)", porodica="Rutaceae (citrus)",
         medicinskoUpozorenje="Limunov sok može izazvati iritaciju kože kod nekih ljudi, posebno ako se koristi neposredno prije izlaganja suncu." +
                 "Konzumacija velikih količina limunovog soka može izazvati iritaciju sluznice želuca ili crijeva kod nekih ljudi, posebno onih s osjetljivim želucem ili problemima s kiselinom. " +
                 " Limun može interagirati s određenim lijekovima, posebno onima koji su osjetljivi na kiselost želuca.",
         medicinskeKoristi = listOf(MedicinskaKorist.PROTUUPALNO,MedicinskaKorist.PODRSKAIMUNITETU),
         profilOkusa=ProfilOkusaBiljke.CITRUSNI,
-        jela=listOf("Pasta sa limunom","Lemoncake","Lignje s limunom"),
+        jela=mutableListOf("Pasta sa limunom","Lemoncake","Lignje s limunom"),
         klimatskiTipovi=listOf(KlimatskiTip.TROPSKA,KlimatskiTip.SUHA),
-        zemljisniTipovi=listOf(Zemljiste.CRNICA)),
+        zemljisniTipovi=mutableListOf(Zemljiste.CRNICA)),
     Biljka(naziv="Bijeli luk (Allium sativum)", porodica="Aliaceae (lukovke)",
         medicinskoUpozorenje="Za neke ljude, konzumacija luka može izazvati probavne smetnje poput nadutosti, plinova ili žgaravice." +
                 "Prijeći rukama preko luka ili rezanje luka može izazvati iritaciju kože ili suze zbog sumpornih spojeva koji se oslobađaju tijekom obrade luka. Preporučuje se nošenje rukavica prilikom rezanja luka kako bi se smanjila iritacija kože.",
         medicinskeKoristi=listOf(MedicinskaKorist.PODRSKAIMUNITETU,MedicinskaKorist.REGULACIJAPRITISKA),
         profilOkusa=ProfilOkusaBiljke.LJUTO,
-        jela=listOf("Garlic bread","Tjestenina s lukom i sirom","Pire od krompira s lukom"),
+        jela=mutableListOf("Garlic bread","Tjestenina s lukom i sirom","Pire od krompira s lukom"),
         klimatskiTipovi = listOf(KlimatskiTip.PLANINSKA,KlimatskiTip.UMJERENA),
-        zemljisniTipovi = listOf(Zemljiste.KRECNJACKO))
+        zemljisniTipovi = mutableListOf(Zemljiste.KRECNJACKO))
 )
 val noveBiljkeDodane=mutableListOf<Biljka>()
 
