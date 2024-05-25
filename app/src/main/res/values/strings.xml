@@ -39,4 +39,6 @@
     <string name="praznaError">Mora biti dodano barem jedno jelo u listi jela</string>
     <string name="duplikatError">Jelo je već dodano u listi</string>
     <string name="dozvolaKamereError">Dozvola za kameru je odbijena</string>
+    <string name="pretraga">Brza pretraga</string>
+    <string name="unospretrage">Unesi tekst</string>
 </resources>

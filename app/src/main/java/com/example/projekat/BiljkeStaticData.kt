@@ -149,3 +149,7 @@ fun getZemljisneTipove() :MutableList<String>{
         Zemljiste.PJESKOVITO.naziv, Zemljiste.SLJUNKOVITO.naziv
     )
 }
+
+fun getBoje(): List<String>{
+    return listOf("red","blue","yellow","orange","purple","brown","green")
+}

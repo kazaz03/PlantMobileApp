@@ -77,7 +77,7 @@ class TrefleDAO {
                                 {
                                     plant.zemljisniTipovi.remove(zemljiste)
                                     if(brojac==0) plant.zemljisniTipovi.add(odgovarajuceZemljiste)
-                                    brojac=brojac+1
+                                    brojac++
                                 }
                             }
                             }
@@ -91,7 +91,7 @@ class TrefleDAO {
                                     if(!klima.opis.equals(odgovarajucaKlima.opis)){
                                         plant.klimatskiTipovi.remove(klima)
                                         if(brojac==0) plant.klimatskiTipovi.add(odgovarajucaKlima)
-                                        brojac=brojac+1
+                                        brojac++
                                     }
                                 }
                             }
@@ -102,6 +102,16 @@ class TrefleDAO {
                 e.printStackTrace()
             }
             return@withContext plant
+        }
+
+        suspend fun getPlantsWithFlowerColor(flower_color:String,substr:String): List<Biljka> =withContext(Dispatchers.IO){
+            var biljke= mutableListOf<Biljka>()
+            try{
+
+            }catch(e: IOException){
+                e.printStackTrace()
+            }
+            return@withContext biljke
         }
 
     fun getKlima(light: Int, humidity: Int): KlimatskiTip{

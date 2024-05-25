@@ -7,6 +7,8 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.Spinner
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -27,6 +29,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var biljkeAdapter3: BiljkaAdapterKuharska
     private var biljke = getBiljke()
     private val trefleDAO=TrefleDAO()
+    private lateinit var botanickeFuncionalnosti: LinearLayout
+    private lateinit var pretragaET: EditText
+    private lateinit var brzaPretraga: Button
+    private lateinit var bojaSPIN: Spinner
+    private var listaBoja=getBoje()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -38,6 +45,15 @@ class MainActivity : AppCompatActivity() {
         }
         biljkeView=findViewById(R.id.biljkeRV)
         biljkeView.layoutManager=LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+
+        botanickeFuncionalnosti=findViewById(R.id.botanickeFunkcionalnosti)
+        pretragaET=findViewById(R.id.pretragaET)
+        brzaPretraga=findViewById(R.id.brzaPretraga)
+        bojaSPIN=findViewById(R.id.bojaSPIN)
+
+        val bojeAdapter=ArrayAdapter(this, android.R.layout.simple_spinner_item,listaBoja)
+        bojeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        bojaSPIN.adapter=bojeAdapter
 
         //dodavanje opcija u spinner
         val opcije = listOf("Medicinski", "Kuharski", "Botanički")
@@ -58,6 +74,7 @@ class MainActivity : AppCompatActivity() {
                 val selectedOption: String = parent?.getItemAtPosition(position).toString()
                 if(selectedOption=="Medicinski")
                 {
+                    botanickeFuncionalnosti.visibility=View.GONE
                     biljkeView.adapter=biljkeAdapter1
                     if (filtriranaLista.isNotEmpty()) {
                         biljkeAdapter1.updateBiljke(filtriranaLista)
@@ -65,6 +82,7 @@ class MainActivity : AppCompatActivity() {
                     biljkeAdapter1.updateBiljke(biljke)
                 }else if(selectedOption=="Botanički")
                 {
+                    botanickeFuncionalnosti.visibility=View.VISIBLE //kad je u botanickim da se vidi
                     biljkeView.adapter=biljkeAdapter2
                     if (filtriranaLista.isNotEmpty()) {
                         biljkeAdapter2.updateBiljke(filtriranaLista)
@@ -72,6 +90,7 @@ class MainActivity : AppCompatActivity() {
                     biljkeAdapter2.updateBiljke(biljke)
                 }else
                 {
+                    botanickeFuncionalnosti.visibility=View.GONE
                     biljkeView.adapter=biljkeAdapter3
                     if (filtriranaLista.isNotEmpty()) {
                         biljkeAdapter3.updateBiljke(filtriranaLista)

@@ -6,5 +6,6 @@ data class Species(
     @SerializedName("family") val family: String,
     @SerializedName("edible") val edible: Boolean?,
     @SerializedName("specifications") val specifications: SpeciesMainCharacteristics,
-    @SerializedName("growth") val growth: GrowthOfFarmingRelatedFields
+    @SerializedName("growth") val growth: GrowthOfFarmingRelatedFields,
+    @SerializedName("flower") val flower: FlowerOfPlant
 )
