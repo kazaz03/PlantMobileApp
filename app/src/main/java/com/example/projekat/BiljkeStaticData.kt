@@ -8,7 +8,7 @@ val biljkestatic = listOf(
         medicinskeKoristi = listOf(MedicinskaKorist.SMIRENJE, MedicinskaKorist.REGULACIJAPROBAVE),
         profilOkusa = ProfilOkusaBiljke.BEZUKUSNO,
         jela = mutableListOf("Salata od paradajza", "Punjene tikvice"),
-        klimatskiTipovi = listOf(KlimatskiTip.SREDOZEMNA, KlimatskiTip.SUBTROPSKA),
+        klimatskiTipovi = mutableListOf(KlimatskiTip.SREDOZEMNA, KlimatskiTip.SUBTROPSKA),
         zemljisniTipovi = mutableListOf(Zemljiste.PJESKOVITO, Zemljiste.ILOVACA)
     ),
     Biljka(
@@ -19,7 +19,7 @@ val biljkestatic = listOf(
             MedicinskaKorist.PROTIVBOLOVA),
         profilOkusa = ProfilOkusaBiljke.MENTA,
         jela = mutableListOf("Jogurt sa voćem", "Gulaš"),
-        klimatskiTipovi = listOf(KlimatskiTip.SREDOZEMNA, KlimatskiTip.UMJERENA),
+        klimatskiTipovi =mutableListOf(KlimatskiTip.SREDOZEMNA, KlimatskiTip.UMJERENA),
         zemljisniTipovi = mutableListOf(Zemljiste.GLINENO, Zemljiste.CRNICA)
     ),
     Biljka(
@@ -30,7 +30,7 @@ val biljkestatic = listOf(
             MedicinskaKorist.PROTUUPALNO),
         profilOkusa = ProfilOkusaBiljke.AROMATICNO,
         jela = mutableListOf("Čaj od kamilice"),
-        klimatskiTipovi = listOf(KlimatskiTip.UMJERENA, KlimatskiTip.SUBTROPSKA),
+        klimatskiTipovi = mutableListOf(KlimatskiTip.UMJERENA, KlimatskiTip.SUBTROPSKA),
         zemljisniTipovi = mutableListOf(Zemljiste.PJESKOVITO, Zemljiste.KRECNJACKO)
     ),
     Biljka(
@@ -41,7 +41,7 @@ val biljkestatic = listOf(
             MedicinskaKorist.REGULACIJAPRITISKA),
         profilOkusa = ProfilOkusaBiljke.AROMATICNO,
         jela = mutableListOf("Pečeno pile", "Grah","Gulaš"),
-        klimatskiTipovi = listOf(KlimatskiTip.SREDOZEMNA, KlimatskiTip.SUHA),
+        klimatskiTipovi = mutableListOf(KlimatskiTip.SREDOZEMNA, KlimatskiTip.SUHA),
         zemljisniTipovi = mutableListOf(Zemljiste.SLJUNKOVITO, Zemljiste.KRECNJACKO)
     ),
     Biljka(
@@ -52,7 +52,7 @@ val biljkestatic = listOf(
             MedicinskaKorist.PODRSKAIMUNITETU),
         profilOkusa = ProfilOkusaBiljke.AROMATICNO,
         jela = mutableListOf("Jogurt sa voćem"),
-        klimatskiTipovi = listOf(KlimatskiTip.SREDOZEMNA, KlimatskiTip.SUHA),
+        klimatskiTipovi = mutableListOf(KlimatskiTip.SREDOZEMNA, KlimatskiTip.SUHA),
         zemljisniTipovi = mutableListOf(Zemljiste.PJESKOVITO, Zemljiste.KRECNJACKO)
     ),
     Biljka(naziv="Aloe vera (Aloe Barbadensis)",
@@ -62,7 +62,7 @@ val biljkestatic = listOf(
         medicinskeKoristi = listOf(MedicinskaKorist.PROTUUPALNO,MedicinskaKorist.SMIRENJE),
         profilOkusa=ProfilOkusaBiljke.GORKO,
         jela=mutableListOf("Morska hrana","Smoothie","Salata"),
-        klimatskiTipovi = listOf(KlimatskiTip.SUHA,KlimatskiTip.TROPSKA),
+        klimatskiTipovi = mutableListOf(KlimatskiTip.SUHA,KlimatskiTip.TROPSKA),
         zemljisniTipovi=mutableListOf(Zemljiste.PJESKOVITO,Zemljiste.KRECNJACKO)),
 
     Biljka(naziv="Đumbir (Zingiber officinale)",porodica="Zingiberaceae (liliopside)",
@@ -71,7 +71,7 @@ val biljkestatic = listOf(
         medicinskeKoristi = listOf(MedicinskaKorist.REGULACIJAPROBAVE),
         profilOkusa=ProfilOkusaBiljke.LJUTO,
         jela=mutableListOf("Čaj","Marinirana piletina s đumbirom","Pečena riba","Kolači"),
-        klimatskiTipovi = listOf(KlimatskiTip.SUHA,KlimatskiTip.SREDOZEMNA),
+        klimatskiTipovi = mutableListOf(KlimatskiTip.SUHA,KlimatskiTip.SREDOZEMNA),
         zemljisniTipovi = mutableListOf(Zemljiste.GLINENO)),
 
     Biljka(naziv="Hibiskus (Rosa Sinensis)",porodica="Malvaceae (sljez)",
@@ -79,7 +79,7 @@ val biljkestatic = listOf(
         medicinskeKoristi = listOf(MedicinskaKorist.PROTUUPALNO),
         profilOkusa=ProfilOkusaBiljke.SLATKI,
         jela=mutableListOf("Salata","Džem od hibiskusa","Hibiskusni umak"),
-        klimatskiTipovi = listOf(KlimatskiTip.UMJERENA,KlimatskiTip.SREDOZEMNA),
+        klimatskiTipovi = mutableListOf(KlimatskiTip.UMJERENA,KlimatskiTip.SREDOZEMNA),
         zemljisniTipovi = mutableListOf(Zemljiste.CRNICA)),
     Biljka(naziv="Limun (Citrus Limon)", porodica="Rutaceae (citrus)",
         medicinskoUpozorenje="Limunov sok može izazvati iritaciju kože kod nekih ljudi, posebno ako se koristi neposredno prije izlaganja suncu." +
@@ -88,7 +88,7 @@ val biljkestatic = listOf(
         medicinskeKoristi = listOf(MedicinskaKorist.PROTUUPALNO,MedicinskaKorist.PODRSKAIMUNITETU),
         profilOkusa=ProfilOkusaBiljke.CITRUSNI,
         jela=mutableListOf("Pasta sa limunom","Lemoncake","Lignje s limunom"),
-        klimatskiTipovi=listOf(KlimatskiTip.TROPSKA,KlimatskiTip.SUHA),
+        klimatskiTipovi=mutableListOf(KlimatskiTip.TROPSKA,KlimatskiTip.SUHA),
         zemljisniTipovi=mutableListOf(Zemljiste.CRNICA)),
     Biljka(naziv="Bijeli luk (Allium sativum)", porodica="Aliaceae (lukovke)",
         medicinskoUpozorenje="Za neke ljude, konzumacija luka može izazvati probavne smetnje poput nadutosti, plinova ili žgaravice." +
@@ -96,7 +96,7 @@ val biljkestatic = listOf(
         medicinskeKoristi=listOf(MedicinskaKorist.PODRSKAIMUNITETU,MedicinskaKorist.REGULACIJAPRITISKA),
         profilOkusa=ProfilOkusaBiljke.LJUTO,
         jela=mutableListOf("Garlic bread","Tjestenina s lukom i sirom","Pire od krompira s lukom"),
-        klimatskiTipovi = listOf(KlimatskiTip.PLANINSKA,KlimatskiTip.UMJERENA),
+        klimatskiTipovi = mutableListOf(KlimatskiTip.PLANINSKA,KlimatskiTip.UMJERENA),
         zemljisniTipovi = mutableListOf(Zemljiste.KRECNJACKO))
 )
 val noveBiljkeDodane=mutableListOf<Biljka>()

@@ -23,7 +23,6 @@ class TrefleDAO {
                     val plants = response.body()?.data
                     if (!plants.isNullOrEmpty()) {
                         val imageUrl = plants[0].imageUrl
-                        Log.d("id biljke",plants[0].id.toString())
                         if (!imageUrl.isNullOrEmpty()) {
                             val inputStream = URL(imageUrl).openStream()
                             return@withContext BitmapFactory.decodeStream(inputStream)
@@ -46,7 +45,6 @@ class TrefleDAO {
                     val plants=response.body()?.data
                     if(!plants.isNullOrEmpty()){
                         val plantId=plants[0].id
-                        Log.d("id biljke2",plantId.toString())
                         //sad pozivat ovu za id
                         if(plants[0].family!="") plant.porodica=plants[0].family
                         //ispravljanje i naziva mozda i ne treba dodat
@@ -87,7 +85,15 @@ class TrefleDAO {
                             val lightOfPlant=plantMainSpecies?.growth?.light
                             val atmosphericHumidityOfPlant=plantMainSpecies?.growth?.atmosphericHumidity
                             if(lightOfPlant!=null && atmosphericHumidityOfPlant!=null){
-
+                                val odgovarajucaKlima=getKlima(lightOfPlant,atmosphericHumidityOfPlant)
+                                var brojac=0
+                                for(klima in plant.klimatskiTipovi) {
+                                    if(!klima.opis.equals(odgovarajucaKlima.opis)){
+                                        plant.klimatskiTipovi.remove(klima)
+                                        if(brojac==0) plant.klimatskiTipovi.add(odgovarajucaKlima)
+                                        brojac=brojac+1
+                                    }
+                                }
                             }
                         }
                     }
@@ -97,6 +103,15 @@ class TrefleDAO {
             }
             return@withContext plant
         }
+
+    fun getKlima(light: Int, humidity: Int): KlimatskiTip{
+        if(light in arrayOf(6,7,8,9) && humidity in arrayOf(1,2,3,4,5)) return KlimatskiTip.SREDOZEMNA
+        else if(light in arrayOf(8,9,10) && humidity in arrayOf(7,8,9,10)) return KlimatskiTip.TROPSKA
+        else if(light in arrayOf(6,7,8,9) && humidity in arrayOf(5,6,7,8)) return KlimatskiTip.SUBTROPSKA
+        else if(light in arrayOf(4,5,6,7) && humidity in arrayOf(3,4,5,6,7)) return KlimatskiTip.UMJERENA
+        else if (light in arrayOf(7,8,9) && humidity in arrayOf(1,2)) return KlimatskiTip.SUHA
+        else return KlimatskiTip.PLANINSKA
+    }
 
     fun getLatinskiNaziv(puniNaziv: String): String{
         val pattern = "\\((.*?)\\)".toRegex()

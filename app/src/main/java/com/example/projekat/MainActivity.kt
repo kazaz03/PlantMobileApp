@@ -206,8 +206,8 @@ class MainActivity : AppCompatActivity() {
 
             val novabiljka=Biljka(naziv=naziv2.toString(),porodica=porodica2.toString(),
                 medicinskoUpozorenje=medicinskoUpozorenje2.toString(),medicinskeKoristi=medicinskeKoristiLista.toList(),
-                profilOkusa=Okus2,jela= listaJela.toList().toMutableList(), klimatskiTipovi = klimatskiTipoviLista.toList(),
-                zemljisniTipovi = zemljisniTipoviLista.toList())
+                profilOkusa=Okus2,jela= listaJela.toMutableList(), klimatskiTipovi = klimatskiTipoviLista.toMutableList(),
+                zemljisniTipovi = zemljisniTipoviLista.toMutableList())
             val scope= CoroutineScope(Job() + Dispatchers.Main)
             scope.launch{
                 trefleDAO.fixData(novabiljka)

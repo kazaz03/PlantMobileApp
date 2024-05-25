@@ -10,6 +10,6 @@ data class Biljka(
     val medicinskeKoristi: List<MedicinskaKorist>,
     val profilOkusa: ProfilOkusaBiljke,
     var jela: MutableList<String>,
-    val klimatskiTipovi: List<KlimatskiTip>,
+    var klimatskiTipovi: MutableList<KlimatskiTip>,
     var zemljisniTipovi: MutableList<Zemljiste>
 )//: Serializable
