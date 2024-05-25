@@ -68,7 +68,7 @@ class BiljkaAdapterKuharska(var biljke: List<Biljka>): RecyclerView.Adapter<Bilj
         }
 
         holder.nazivBiljke.text=biljka.naziv;
-        holder.profilokusa.text=biljka.profilOkusa.opis;
+        holder.profilokusa.text=biljka.profilOkusa?.opis;
         try
         {
             holder.jelo1.text=biljka.jela[0]

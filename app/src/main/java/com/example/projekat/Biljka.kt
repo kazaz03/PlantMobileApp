@@ -8,7 +8,7 @@ data class Biljka(
     var porodica: String,
     var medicinskoUpozorenje: String,
     val medicinskeKoristi: List<MedicinskaKorist>,
-    val profilOkusa: ProfilOkusaBiljke,
+    val profilOkusa: ProfilOkusaBiljke?,
     var jela: MutableList<String>,
     var klimatskiTipovi: MutableList<KlimatskiTip>,
     var zemljisniTipovi: MutableList<Zemljiste>

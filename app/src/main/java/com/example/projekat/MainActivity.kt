@@ -34,6 +34,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var brzaPretraga: Button
     private lateinit var bojaSPIN: Spinner
     private var listaBoja=getBoje()
+    private var rezultatPretrage=mutableListOf<Biljka>()
+    private var odabranaBoja=""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -75,6 +77,7 @@ class MainActivity : AppCompatActivity() {
                 if(selectedOption=="Medicinski")
                 {
                     botanickeFuncionalnosti.visibility=View.GONE
+                    biljkeAdapter2.postaviNaFalse()
                     biljkeView.adapter=biljkeAdapter1
                     if (filtriranaLista.isNotEmpty()) {
                         biljkeAdapter1.updateBiljke(filtriranaLista)
@@ -91,6 +94,7 @@ class MainActivity : AppCompatActivity() {
                 }else
                 {
                     botanickeFuncionalnosti.visibility=View.GONE
+                    biljkeAdapter2.postaviNaFalse()
                     biljkeView.adapter=biljkeAdapter3
                     if (filtriranaLista.isNotEmpty()) {
                         biljkeAdapter3.updateBiljke(filtriranaLista)
@@ -104,6 +108,18 @@ class MainActivity : AppCompatActivity() {
                 biljkeAdapter1.updateBiljke(biljke)
             }
         }
+
+        bojaSPIN.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
+            @SuppressLint("SuspiciousIndentation")
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long){
+                val selectedOption: String = parent?.getItemAtPosition(position).toString()
+                odabranaBoja=selectedOption
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                odabranaBoja=""
+            }
+        }
+
         //ovdje dodajemo listener za svaki adapter posebno kad se klikne u modu
         //i pored toga se spasi filtrirana lista
         biljkeAdapter1.setOnItemClickListener(object : BiljkaAdapterMedicinska.OnItemClickListener {
@@ -129,6 +145,7 @@ class MainActivity : AppCompatActivity() {
             biljkeAdapter1.updateBiljke(biljke)
             biljkeAdapter2.updateBiljke(biljke)
             biljkeAdapter3.updateBiljke(biljke)
+            biljkeAdapter2.postaviNaFalse()
             filtriranaLista= mutableListOf()
         }
 
@@ -137,6 +154,16 @@ class MainActivity : AppCompatActivity() {
         dodajButton.setOnClickListener{
             var otvori_dodajIntent= Intent(this,NovaBiljkaActivity::class.java);
             startActivity(otvori_dodajIntent)
+        }
+
+        //brza pretraga button kad se pritisne
+        brzaPretraga.setOnClickListener {
+            val scope=CoroutineScope(Job() + Dispatchers.Main)
+            scope.launch{
+                rezultatPretrage=trefleDAO.getPlantsWithFlowerColor(odabranaBoja,pretragaET.text.toString()).toMutableList()
+                biljkeAdapter2.postaviNaTrue()
+                biljkeAdapter2.updateBiljke(rezultatPretrage)
+            }
         }
 
         val extras=intent.extras

@@ -25,6 +25,8 @@ class BiljkaAdapterBotanicka(var biljke: List<Biljka>): RecyclerView.Adapter<Bil
         "Bijeli luk (Allium sativum)" to R.drawable.cesnjak
     )
 
+    private var pretragaObavljena=false
+
     private var itemClickListener: OnItemClickListener? = null
 
     private var trefleDAO=TrefleDAO()
@@ -43,6 +45,13 @@ class BiljkaAdapterBotanicka(var biljke: List<Biljka>): RecyclerView.Adapter<Bil
         } else {
             return null
         }
+    }
+
+    fun postaviNaTrue(){
+        pretragaObavljena=true
+    }
+    fun postaviNaFalse(){
+        pretragaObavljena=false
     }
 
     fun updateBiljke(biljke: List<Biljka>) {
@@ -109,6 +118,7 @@ class BiljkaAdapterBotanicka(var biljke: List<Biljka>): RecyclerView.Adapter<Bil
 
     fun filterByCriteria(biljka: Biljka): List<Biljka>
     {
+        if(pretragaObavljena) return biljke.toList()
         val sharedClimates = biljka.klimatskiTipovi
         val sharedSoils = biljka.zemljisniTipovi
         val porodica=biljka.porodica

@@ -73,11 +73,12 @@ class TrefleDAO {
                             val odgovarajuceZemljiste=getZemljiste(soilTextureOfPlant)
                                 var brojac=0
                             for(zemljiste in plant.zemljisniTipovi){
-                                if(!zemljiste.naziv.equals(odgovarajuceZemljiste.naziv))
-                                {
-                                    plant.zemljisniTipovi.remove(zemljiste)
-                                    if(brojac==0) plant.zemljisniTipovi.add(odgovarajuceZemljiste)
-                                    brojac++
+                                if (odgovarajuceZemljiste != null) {
+                                    if(!zemljiste.naziv.equals(odgovarajuceZemljiste.naziv)) {
+                                        plant.zemljisniTipovi.remove(zemljiste)
+                                        if(brojac==0) plant.zemljisniTipovi.add(odgovarajuceZemljiste)
+                                        brojac++
+                                    }
                                 }
                             }
                             }
@@ -88,10 +89,12 @@ class TrefleDAO {
                                 val odgovarajucaKlima=getKlima(lightOfPlant,atmosphericHumidityOfPlant)
                                 var brojac=0
                                 for(klima in plant.klimatskiTipovi) {
-                                    if(!klima.opis.equals(odgovarajucaKlima.opis)){
-                                        plant.klimatskiTipovi.remove(klima)
-                                        if(brojac==0) plant.klimatskiTipovi.add(odgovarajucaKlima)
-                                        brojac++
+                                    if (odgovarajucaKlima != null) {
+                                        if(!klima.opis.equals(odgovarajucaKlima.opis)){
+                                            plant.klimatskiTipovi.remove(klima)
+                                            if(brojac==0) plant.klimatskiTipovi.add(odgovarajucaKlima)
+                                            brojac++
+                                        }
                                     }
                                 }
                             }
@@ -106,21 +109,83 @@ class TrefleDAO {
 
         suspend fun getPlantsWithFlowerColor(flower_color:String,substr:String): List<Biljka> =withContext(Dispatchers.IO){
             var biljke= mutableListOf<Biljka>()
+            var listaIdova= mutableListOf<Int>()
             try{
+                //pretraga po dijelu
+                val response=ApiAdapter.retrofit.searchPlants(substr)
+                if(response.isSuccessful){
+                    val plants=response.body()?.data //lista biljaka od kojih sad trebam uzet id
+                    if(!plants.isNullOrEmpty()){
+                        for(plant in plants){
+                            listaIdova.add(plant.id)
+                        }
+                    }
+                    //sad pozivamo da nadjemo preko id ostale atribute
+                    if(listaIdova.isNotEmpty())
+                    for(id in listaIdova)
+                    {
+                        Log.d("idovi biljaka",id.toString())
+                        val response2=ApiAdapter.retrofit.getPlantById(id)
+                        if(response2.isSuccessful){
+                            //ako uspije vratit biljku
+                            val bojeBiljke=response2.body()?.data?.mainSpecies?.flower?.color
+                            if(bojeBiljke!=null && bojeBiljke.contains(flower_color)){
+                                /*gledat da li ima i substring u necemu nez jel u nazivu il u latinskom nazivu*/
+                                //sad treba napravit biljku
+                                val nazivnepotpun=response2.body()?.data?.commonName
+                                var porodica=response2.body()?.data?.mainSpecies?.family
+                                val latinskiNaziv=response2.body()?.data?.scientificName
+                                val naziv=nazivnepotpun.plus(" ($latinskiNaziv)")
+                                val listaZemljista=mutableListOf<Zemljiste>()
+                                val listaKlima=mutableListOf<KlimatskiTip>()
+                                val medUpozorenje=""
+                                //vidjet jel jestivo
+                                val jestivo=response2.body()?.data?.mainSpecies?.edible
+                                if(jestivo!=null && jestivo.equals(false))
+                                {
+                                    medUpozorenje.plus("NIJE JESTIVO")
+                                }
+                                val toksicno=response2.body()?.data?.mainSpecies?.specifications?.toxicity
+                                if(toksicno!=null)
+                                {
+                                    medUpozorenje.plus(" TOKSIČNO")
+                                }
+                                if(porodica==null) porodica=""
+                                //klimatski tip i zemljisni tip da se uzme
+                                val soilTexture= response2.body()?.data?.mainSpecies!!.growth.soil_texture
+                                if(soilTexture!=null){
+                                    val zemljiste=getZemljiste(soilTexture)
+                                    if(zemljiste!=null) listaZemljista.add(zemljiste)
+                                }
+                                val light= response2.body()?.data?.mainSpecies!!.growth.light
+                                val atmosfera=response2.body()?.data?.mainSpecies?.growth?.atmosphericHumidity
+                                if(light!=null && atmosfera!=null){
+                                    val klima=getKlima(light,atmosfera)
+                                    if(klima!=null) listaKlima.add(klima)
+                                }
+                                var biljka=Biljka(naziv,porodica,medUpozorenje, emptyList(),null,
+                                    mutableListOf(),listaKlima,listaZemljista)
 
+                                biljke.add(biljka)
+                            }
+                        }
+                    }
+                }
             }catch(e: IOException){
                 e.printStackTrace()
             }
             return@withContext biljke
         }
 
-    fun getKlima(light: Int, humidity: Int): KlimatskiTip{
+    fun getKlima(light: Int, humidity: Int): KlimatskiTip?{
         if(light in arrayOf(6,7,8,9) && humidity in arrayOf(1,2,3,4,5)) return KlimatskiTip.SREDOZEMNA
         else if(light in arrayOf(8,9,10) && humidity in arrayOf(7,8,9,10)) return KlimatskiTip.TROPSKA
         else if(light in arrayOf(6,7,8,9) && humidity in arrayOf(5,6,7,8)) return KlimatskiTip.SUBTROPSKA
         else if(light in arrayOf(4,5,6,7) && humidity in arrayOf(3,4,5,6,7)) return KlimatskiTip.UMJERENA
         else if (light in arrayOf(7,8,9) && humidity in arrayOf(1,2)) return KlimatskiTip.SUHA
-        else return KlimatskiTip.PLANINSKA
+        else if(light in arrayOf(0,1,2,3,4,5) && humidity in arrayOf(3,4,5,6,7)) return KlimatskiTip.PLANINSKA
+        return null
+        //ovdje ispravit ako je 0 do 5 da bude planinski i da bude null
     }
 
     fun getLatinskiNaziv(puniNaziv: String): String{
@@ -129,12 +194,14 @@ class TrefleDAO {
         return matchResult?.groupValues?.get(1)?:""
     }
 
-    fun getZemljiste(broj: Int): Zemljiste{
+    fun getZemljiste(broj: Int): Zemljiste?{
         if(broj==1 || broj==2) return Zemljiste.GLINENO
         else if(broj==3 || broj==4) return Zemljiste.PJESKOVITO
         else if(broj==5 || broj==6) return Zemljiste.ILOVACA
         else if(broj==7 || broj==8) return Zemljiste.CRNICA
         else if(broj==9) return Zemljiste.SLJUNKOVITO
-        else return Zemljiste.KRECNJACKO
+        else if(broj==10) return Zemljiste.KRECNJACKO
+        return null
+        //vracat nista za zemljiste
     }
 }
