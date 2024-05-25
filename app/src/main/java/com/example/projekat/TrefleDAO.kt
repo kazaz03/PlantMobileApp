@@ -121,7 +121,6 @@ class TrefleDAO {
                         }
                     }
                     //sad pozivamo da nadjemo preko id ostale atribute
-                    if(listaIdova.isNotEmpty())
                     for(id in listaIdova)
                     {
                         Log.d("idovi biljaka",id.toString())
