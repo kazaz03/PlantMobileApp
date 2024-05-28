@@ -60,7 +60,7 @@ class TestiranjeValidacije {
         val pokreniDetalje= Intent(ApplicationProvider.getApplicationContext(),NovaBiljkaActivity::class.java)
         launchActivity<NovaBiljkaActivity>(pokreniDetalje)
         val tekstZaPopunit1="b"
-        val errorPoruka="Naziv mora imati između 2 i 20 znakova"
+        val errorPoruka="Naziv mora imati između 2 i 40 znakova"
         onView(withId(R.id.nazivET)).perform(typeText(tekstZaPopunit1),closeSoftKeyboard())
         onView(withId(R.id.main)).perform(swipeUp())
         onView(withId(R.id.dodajBiljkuBtn)).perform(click())
@@ -71,12 +71,32 @@ class TestiranjeValidacije {
     {
         val pokreniDalje=Intent(ApplicationProvider.getApplicationContext(),NovaBiljkaActivity::class.java)
         launchActivity<NovaBiljkaActivity>(pokreniDalje)
-        val tekstZaPopunit2="abcdefghijklmnoprstuvzk"
-        val errorPoruka="Naziv mora imati između 2 i 20 znakova"
+        val tekstZaPopunit2="abcdefghijklmnoprstuvzkabcdefghijklmnoprstuvzkko"
+        val errorPoruka="Naziv mora imati između 2 i 40 znakova"
         onView(withId(R.id.nazivET)).perform(typeText(tekstZaPopunit2), closeSoftKeyboard())
         onView(withId(R.id.main)).perform(swipeUp())
         onView(withId(R.id.dodajBiljkuBtn)).perform(click())
         onView(withId(R.id.nazivET)).check(matches(hasErrorText(errorPoruka)))
+    }
+
+    @Test
+    fun NemaLatinskogNaziv(){
+        val pokreniDalje=Intent(ApplicationProvider.getApplicationContext(),NovaBiljkaActivity::class.java)
+        launchActivity<NovaBiljkaActivity>(pokreniDalje)
+        val tekstZaPopunit="Neki naziv"
+        val tekstZaPopunit2="Neki naziv (zagrada)"
+        val errorPoruka="Naziv mora imati i latinski naziv unesen"
+        onView(withId(R.id.nazivET)).perform(typeText(tekstZaPopunit), closeSoftKeyboard())
+        onView(withId(R.id.main)).perform(swipeUp())
+        onView(withId(R.id.dodajBiljkuBtn)).perform(click())
+        onView(withId(R.id.main)).perform(swipeDown())
+        onView(withId(R.id.latinskiNazivError)).check(matches(withErrorText(errorPoruka)))
+        onView(withId(R.id.nazivET)).perform(clearText())
+        onView(withId(R.id.nazivET)).perform(typeText(tekstZaPopunit2), closeSoftKeyboard())
+        onView(withId(R.id.main)).perform(swipeUp())
+        onView(withId(R.id.dodajBiljkuBtn)).perform(click())
+        onView(withId(R.id.main)).perform(swipeDown())
+        onView(withId(R.id.latinskiNazivError)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
     }
 
     @Test

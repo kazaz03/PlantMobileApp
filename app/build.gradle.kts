@@ -17,6 +17,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         //api key dodat
+        buildConfigField("String", "API_KEY", "\"${project.findProperty("API_KEY") as String}\"")
     }
 
     buildTypes {
@@ -82,4 +83,6 @@ dependencies {
     annotationProcessor("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
     kapt("androidx.room:room-compiler:2.6.1")
+
+    android.buildFeatures.buildConfig=true
 }

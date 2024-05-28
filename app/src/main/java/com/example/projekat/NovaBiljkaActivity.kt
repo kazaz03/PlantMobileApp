@@ -67,6 +67,7 @@ class NovaBiljkaActivity : AppCompatActivity() {
     private lateinit var praznaListaJelaError: TextView
     private lateinit var duplikatJelaError: TextView
     private lateinit var dozvolaError: TextView
+    private lateinit var latinskiNazivError: TextView
     @SuppressLint("QueryPermissionsNeeded")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,6 +86,7 @@ class NovaBiljkaActivity : AppCompatActivity() {
         praznaListaJelaError=findViewById(R.id.praznaListaJelaError)
         duplikatJelaError=findViewById(R.id.duplikatJelaError)
         dozvolaError=findViewById(R.id.dozvolaError)
+        latinskiNazivError=findViewById(R.id.latinskiNazivError)
 
         slikaIV=findViewById(R.id.slikaIV)
         scrollView=findViewById(R.id.main)
@@ -224,6 +226,7 @@ class NovaBiljkaActivity : AppCompatActivity() {
                 zemljisniTipError.visibility=View.GONE
                 praznaListaJelaError.visibility=View.GONE
                 duplikatJelaError.visibility=View.GONE
+                latinskiNazivError.visibility=View.GONE
                 val intent= Intent(this,MainActivity::class.java)
                 //moze se implementirat kao serializable i onda poslaz samo biljka
                 intent.putExtra("naziv",unosNaziva.text.toString())
@@ -349,10 +352,19 @@ class NovaBiljkaActivity : AppCompatActivity() {
         val medicinskoUpozorenje=unosMedicinskogUpozorenja.text.toString()
         var validno=true
 
-        if (naziv.length !in 2..20) {
-            unosNaziva.error = "Naziv mora imati između 2 i 20 znakova"
+        if (naziv.length !in 2..40) {
+            unosNaziva.error = "Naziv mora imati između 2 i 40 znakova"
             validno=false
         }
+
+        //provjera ima li naziv u sebi latinski naziv
+        if(!imaLatinskiNaziv(naziv))
+        {
+            latinskiNazivError.visibility=View.VISIBLE
+            latinskiNazivError.error="Naziv mora imati i latinski naziv unesen"
+            validno=false
+        }else latinskiNazivError.visibility=View.GONE
+
         if (porodica.length !in 2..20) {
             unosPorodice.error="Porodica mora imati između 2 i 20 znakova"
             validno = false
@@ -402,6 +414,11 @@ class NovaBiljkaActivity : AppCompatActivity() {
             }
         }
         return false
+    }
+
+    private fun imaLatinskiNaziv(tekst: String):Boolean{
+        val regex = Regex("\\(.*?\\)")
+        return regex.containsMatchIn(tekst)
     }
 
 }

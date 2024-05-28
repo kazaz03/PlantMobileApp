@@ -71,6 +71,18 @@
                     android:textSize="15sp" />
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/latinskiNazivError"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:textColor="@color/crvena"
+                android:visibility="gone"
+                android:text="@string/latinskiError"
+                android:layout_marginBottom="30dp"
+                />
+
             <EditText
                 android:id="@+id/medicinskoUpozorenjeET"
                 android:layout_width="match_parent"

@@ -41,4 +41,5 @@
     <string name="dozvolaKamereError">Dozvola za kameru je odbijena</string>
     <string name="pretraga">Brza pretraga</string>
     <string name="unospretrage">Unesi tekst</string>
+    <string name="latinskiError">Naziv mora imati i latinski naziv unesen</string>
 </resources>
