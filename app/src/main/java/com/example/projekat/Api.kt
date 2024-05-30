@@ -18,4 +18,11 @@ interface Api {
         @Path("id") id: Int,
         @Query("token") apiKey: String = BuildConfig.API_KEY
     ): Response<PlantDetailResponse>
+
+    //flower color poziv
+    @GET("plants")
+    suspend fun getPlantsByFlowerColor(
+        @Query("filter[flower_color]") color: String,
+        @Query("token") apiKey: String=BuildConfig.API_KEY
+    ): Response<GetPlantsResponse>
 }

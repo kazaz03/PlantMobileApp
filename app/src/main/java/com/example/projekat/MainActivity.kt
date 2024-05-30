@@ -77,6 +77,7 @@ class MainActivity : AppCompatActivity() {
                 if(selectedOption=="Medicinski")
                 {
                     botanickeFuncionalnosti.visibility=View.GONE
+                    pretragaET.setText("")
                     biljkeAdapter2.postaviNaFalse()
                     biljkeView.adapter=biljkeAdapter1
                     if (filtriranaLista.isNotEmpty()) {
@@ -94,6 +95,7 @@ class MainActivity : AppCompatActivity() {
                 }else
                 {
                     botanickeFuncionalnosti.visibility=View.GONE
+                    pretragaET.setText("")
                     biljkeAdapter2.postaviNaFalse()
                     biljkeView.adapter=biljkeAdapter3
                     if (filtriranaLista.isNotEmpty()) {
@@ -145,6 +147,7 @@ class MainActivity : AppCompatActivity() {
             biljkeAdapter1.updateBiljke(biljke)
             biljkeAdapter2.updateBiljke(biljke)
             biljkeAdapter3.updateBiljke(biljke)
+            pretragaET.setText("")
             biljkeAdapter2.postaviNaFalse()
             filtriranaLista= mutableListOf()
         }

@@ -107,7 +107,7 @@ class TrefleDAO {
             return@withContext plant
         }
 
-        suspend fun getPlantsWithFlowerColor(flower_color:String,substr:String): List<Biljka> =withContext(Dispatchers.IO){
+        /*suspend fun getPlantsWithFlowerColor(flower_color:String,substr:String): List<Biljka> =withContext(Dispatchers.IO){
             var biljke= mutableListOf<Biljka>()
             var listaIdova= mutableListOf<Int>()
             try{
@@ -174,7 +174,66 @@ class TrefleDAO {
                 e.printStackTrace()
             }
             return@withContext biljke
+        }*/
+
+    suspend fun getPlantsWithFlowerColor(flowerColor:String,substr:String): List<Biljka> =withContext(Dispatchers.IO){
+        var biljke= mutableListOf<Biljka>()
+        try{
+            val first_response=ApiAdapter.retrofit.getPlantsByFlowerColor(flowerColor)
+            if(first_response.isSuccessful){
+                val plants=first_response.body()?.data
+                if(!plants.isNullOrEmpty()){
+                    //provjera koje biljke unutar liste imaju unutar scientific name podstring substr
+                    for(plant in plants){
+                        if(plant.scientificName.lowercase().contains(substr.lowercase())){
+                            //ako sadrzi taj podstring sad vadimo ostale podatke za biljku
+                            val second_response=ApiAdapter.retrofit.getPlantById(plant.id)
+                            if(second_response.isSuccessful){
+                                val nazivnepotpun=second_response.body()?.data?.commonName
+                                var porodica=second_response.body()?.data?.mainSpecies?.family
+                                val latinskiNaziv=second_response.body()?.data?.scientificName
+                                val naziv=nazivnepotpun.plus(" ($latinskiNaziv)")
+                                val listaZemljista=mutableListOf<Zemljiste>()
+                                val listaKlima=mutableListOf<KlimatskiTip>()
+                                val medUpozorenje=""
+                                //vidjet jel jestivo
+                                val jestivo=second_response.body()?.data?.mainSpecies?.edible
+                                if(jestivo!=null && jestivo.equals(false))
+                                {
+                                    medUpozorenje.plus("NIJE JESTIVO")
+                                }
+                                val toksicno=second_response.body()?.data?.mainSpecies?.specifications?.toxicity
+                                if(toksicno!=null)
+                                {
+                                    medUpozorenje.plus(" TOKSIČNO")
+                                }
+                                if(porodica==null) porodica=""
+                                //klimatski tip i zemljisni tip da se uzme
+                                val soilTexture= second_response.body()?.data?.mainSpecies!!.growth.soil_texture
+                                if(soilTexture!=null){
+                                    val zemljiste=getZemljiste(soilTexture)
+                                    if(zemljiste!=null) listaZemljista.add(zemljiste)
+                                }
+                                val light= second_response.body()?.data?.mainSpecies!!.growth.light
+                                val atmosfera=second_response.body()?.data?.mainSpecies?.growth?.atmosphericHumidity
+                                if(light!=null && atmosfera!=null){
+                                    val klima=getKlima(light,atmosfera)
+                                    if(klima!=null) listaKlima.add(klima)
+                                }
+                                var biljka=Biljka(naziv,porodica,medUpozorenje, emptyList(),null,
+                                    mutableListOf(),listaKlima,listaZemljista)
+
+                                biljke.add(biljka)
+                            }
+                        }
+                    }
+                }
+            }
+        }catch(e: Exception){
+            e.printStackTrace()
         }
+        return@withContext biljke
+    }
 
     fun getKlima(light: Int, humidity: Int): KlimatskiTip?{
         if(light in arrayOf(6,7,8,9) && humidity in arrayOf(1,2,3,4,5)) return KlimatskiTip.SREDOZEMNA
