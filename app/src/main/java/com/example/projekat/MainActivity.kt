@@ -1,14 +1,10 @@
 package com.example.projekat
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.util.TypedValue
 import android.view.View
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
@@ -26,6 +22,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
     private var filtriranaLista: MutableList<Biljka> = mutableListOf()
@@ -271,20 +268,26 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            val novabiljka=Biljka(naziv=naziv2.toString(),porodica=porodica2.toString(),
-                medicinskoUpozorenje=medicinskoUpozorenje2.toString(),medicinskeKoristi=medicinskeKoristiLista.toList(),
-                profilOkusa=Okus2,jela= listaJela.toMutableList(), klimatskiTipovi = klimatskiTipoviLista.toMutableList(),
-                zemljisniTipovi = zemljisniTipoviLista.toMutableList())
+            var novabiljka=Biljka(
+                naziv =naziv2.toString(), porodica =porodica2.toString(),
+                medicinskoUpozorenje =medicinskoUpozorenje2.toString(), medicinskeKoristi =medicinskeKoristiLista.toList(),
+                profilOkusa =Okus2, jela = listaJela.toMutableList(), klimatskiTipovi = klimatskiTipoviLista.toMutableList(),
+                zemljisniTipovi = zemljisniTipoviLista,"")
+
+            var novaPopravljenaBiljka=Biljka("","","", emptyList(),null, emptyList(),
+               emptyList(), emptyList(),""
+            )
             val scope= CoroutineScope(Job() + Dispatchers.Main)
             scope.launch{
-                trefleDAO.fixData(novabiljka)
+                novaPopravljenaBiljka=trefleDAO.fixData(novabiljka)
+                Log.d("nova2",novaPopravljenaBiljka.toString())
+                dodajNoveBiljke(novaPopravljenaBiljka)
+                biljke= getBiljke()
+                biljkeAdapter1.updateBiljke(biljke)
+                biljkeAdapter2.updateBiljke(biljke)
+                biljkeAdapter3.updateBiljke(biljke)
+                biljkeView.adapter=biljkeAdapter1
             }
-            if(naziv2!=null) dodajNoveBiljke(novabiljka)
-            biljke= getBiljke()
-            biljkeAdapter1.updateBiljke(biljke)
-            biljkeAdapter2.updateBiljke(biljke)
-            biljkeAdapter3.updateBiljke(biljke)
-            biljkeView.adapter=biljkeAdapter1
         };
     }
 }

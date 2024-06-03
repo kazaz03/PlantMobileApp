@@ -76,13 +76,15 @@ dependencies {
 
     //glide za slike
     implementation("com.github.bumptech.glide:glide:4.12.0")
-    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
+    kapt("com.github.bumptech.glide:compiler:4.12.0") //ili annotationProcessor
 
     //room
     implementation("androidx.room:room-runtime:2.6.1")
     annotationProcessor("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
     kapt("androidx.room:room-compiler:2.6.1")
+
+    testImplementation ("org.assertj:assertj-core:3.22.0")
 
     android.buildFeatures.buildConfig=true
 }

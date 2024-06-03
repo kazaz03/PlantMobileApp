@@ -1,104 +1,114 @@
 package com.example.projekat
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.IOException
-import java.net.HttpURLConnection
 import java.net.URL
 
 class TrefleDAO {
 
-        private var defaultBitmap: Bitmap=Bitmap.createBitmap(100,100,Bitmap.Config.ARGB_8888).apply {
-            eraseColor(android.graphics.Color.GRAY)
-        }
-        suspend fun getImage(plant: Biljka): Bitmap = withContext(Dispatchers.IO) {
-            try {
-                val latinskiNaziv=getLatinskiNaziv(plant.naziv)
-                val response = ApiAdapter.retrofit.searchPlants(latinskiNaziv)
-                if (response.isSuccessful) {
-                    val plants = response.body()?.data
-                    if (!plants.isNullOrEmpty()) {
-                        val imageUrl = plants[0].imageUrl
-                        if (!imageUrl.isNullOrEmpty()) {
-                            val inputStream = URL(imageUrl).openStream()
-                            return@withContext BitmapFactory.decodeStream(inputStream)
-                        }
+    private var defaultBitmap: Bitmap=Bitmap.createBitmap(100,100,Bitmap.Config.ARGB_8888).apply {
+        eraseColor(android.graphics.Color.GRAY)
+    }
+    suspend fun getImage(plant: Biljka): Bitmap = withContext(Dispatchers.IO) {
+        try {
+            val latinskiNaziv=getLatinskiNaziv(plant.naziv)
+            val response = ApiAdapter.retrofit.searchPlants(latinskiNaziv)
+            if (response.isSuccessful) {
+                val plants = response.body()?.data
+                if (!plants.isNullOrEmpty()) {
+                    val imageUrl = plants[0].imageUrl
+                    if (!imageUrl.isNullOrEmpty()) {
+                        val inputStream = URL(imageUrl).openStream()
+                        return@withContext BitmapFactory.decodeStream(inputStream)
                     }
                 }
-            } catch (e: IOException) {
-                e.printStackTrace()
             }
-            return@withContext defaultBitmap
-            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return@withContext defaultBitmap
+    }
 
-        suspend fun fixData(plant: Biljka): Biljka= withContext(Dispatchers.IO){
-            try {
-                val latinskiNaziv=getLatinskiNaziv(plant.naziv)
-                val response=ApiAdapter.retrofit.searchPlants(latinskiNaziv)
-                if(response.isSuccessful)
-                {
-                    //ako je nasao treba da preuzme id od te biljke
-                    val plants=response.body()?.data
-                    if(!plants.isNullOrEmpty()){
-                        val plantId=plants[0].id
-                        //sad pozivat ovu za id
-                        if(plants[0].family!="") plant.porodica=plants[0].family
-                        //ispravljanje i naziva mozda i ne treba dodat
-                        if(plants[0].commonName!="") plant.naziv=plants[0].commonName.plus(" ($latinskiNaziv)")
-                        val response2=ApiAdapter.retrofit.getPlantById(plantId)
-                        if(response2.isSuccessful){
-                            val plantMainSpecies= response2.body()?.data?.mainSpecies
-                            val edibleOrNot= plantMainSpecies?.edible
-                            if(edibleOrNot!=null && edibleOrNot.equals(false))
-                            {
-                                plant.jela.clear()
-                                val staro=plant.medicinskoUpozorenje
-                                val novo=" NIJE JESTIVO"
-                                plant.medicinskoUpozorenje=staro+novo
+    suspend fun fixData(plant: Biljka): Biljka= withContext(Dispatchers.IO){
+        var porodica=""
+        var ime=""
+        var medicinskoUpozorenjeTekst=plant.medicinskoUpozorenje
+        var medicinskeKoristi=plant.medicinskeKoristi
+        var jelaBiljke=plant.jela.toMutableList()
+        var listaZemljista= plant.zemljisniTipovi.toMutableList()
+        var listaKlima= plant.klimatskiTipovi.toMutableList()
+        var profilokusa=plant.profilOkusa
+        try {
+            val latinskiNaziv=getLatinskiNaziv(plant.naziv)
+            val response=ApiAdapter.retrofit.searchPlants(latinskiNaziv)
+            if(response.isSuccessful)
+            {
+                //ako je nasao treba da preuzme id od te biljke
+                val plants=response.body()?.data
+                if(!plants.isNullOrEmpty()){
+                    val plantId=plants[0].id
+                    val ispravljenlatinski=plants[0].scientificName
+                    //sad pozivat ovu za id
+                    if(plants[0].family!="") porodica=plants[0].family
+                    //ispravljanje i naziva mozda i ne treba dodat
+                    if(plants[0].commonName!="") ime=plants[0].commonName.plus(" ($ispravljenlatinski)")
+                    val response2=ApiAdapter.retrofit.getPlantById(plantId)
+                    if(response2.isSuccessful){
+                        val plantMainSpecies= response2.body()?.data?.mainSpecies
+                        val edibleOrNot= plantMainSpecies?.edible
+                        if(edibleOrNot!=null && edibleOrNot.equals(false))
+                        {
+                            jelaBiljke.clear()
+                            val staro=medicinskoUpozorenjeTekst
+                            val novo=" NIJE JESTIVO"
+                            medicinskoUpozorenjeTekst=staro+novo
+                        }
+                        val toxicityBiljke=plantMainSpecies?.specifications?.toxicity
+                        if(toxicityBiljke!=null){
+                            if(!medicinskoUpozorenjeTekst.contains("TOKSIČNO")){
+                                val staro=medicinskoUpozorenjeTekst
+                                val novo=" TOKSIČNO"
+                                medicinskoUpozorenjeTekst=staro+novo
                             }
-                            val toxicityBiljke=plantMainSpecies?.specifications?.toxicity
-                            if(toxicityBiljke!=null){
-                                if(!plant.medicinskoUpozorenje.contains("TOKSIČNO")){
-                                    val staro=plant.medicinskoUpozorenje
-                                    val novo=" TOKSIČNO"
-                                    plant.medicinskoUpozorenje=staro+novo
-                                }
-                            }
-                            val soilTextureOfPlant=plantMainSpecies?.growth?.soil_texture
-                            if(soilTextureOfPlant!=null){
+                        }
+                        val soilTextureOfPlant=plantMainSpecies?.growth?.soil_texture
+                        if(soilTextureOfPlant!=null){
                             val odgovarajuceZemljiste=getZemljiste(soilTextureOfPlant)
-                                var brojac=0
-                            for(zemljiste in plant.zemljisniTipovi){
+                            var brojac=0
+                            for(zemljiste in listaZemljista){
                                 if (odgovarajuceZemljiste != null) {
                                     if(!zemljiste.naziv.equals(odgovarajuceZemljiste.naziv)) {
-                                        plant.zemljisniTipovi.remove(zemljiste)
-                                        if(brojac==0) plant.zemljisniTipovi.add(odgovarajuceZemljiste)
+                                        listaZemljista.remove(zemljiste)
+                                        if(brojac==0) listaZemljista.add(odgovarajuceZemljiste)
                                         brojac++
                                     }
                                 }
                             }
-                            }
-                            val lightOfPlant=plantMainSpecies?.growth?.light
-                            val atmosphericHumidityOfPlant=plantMainSpecies?.growth?.atmosphericHumidity
-                            if(lightOfPlant!=null && atmosphericHumidityOfPlant!=null){
-                                val odgovarajuceKlime=getKlima(lightOfPlant,atmosphericHumidityOfPlant)
-                                plant.klimatskiTipovi.clear()
-                                plant.klimatskiTipovi=odgovarajuceKlime
-                            }
+                        }
+                        val lightOfPlant=plantMainSpecies?.growth?.light
+                        val atmosphericHumidityOfPlant=plantMainSpecies?.growth?.atmosphericHumidity
+                        if(lightOfPlant!=null && atmosphericHumidityOfPlant!=null){
+                            val odgovarajuceKlime=getKlima(lightOfPlant,atmosphericHumidityOfPlant)
+                            listaKlima.clear()
+                            listaKlima=odgovarajuceKlime
                         }
                     }
                 }
-            }catch(e: IOException){
-                e.printStackTrace()
             }
-            return@withContext plant
+        }catch(e: IOException){
+            e.printStackTrace()
         }
+        val novabiljka=Biljka(ime,porodica,medicinskoUpozorenjeTekst,medicinskeKoristi,profilokusa,
+            jelaBiljke.toList(),listaKlima.toList(),listaZemljista.toList(),"")
+        Log.d("novabiljka",novabiljka.toString())
+        return@withContext novabiljka
+    }
 
-        /*suspend fun getPlantsWithFlowerColor(flower_color:String,substr:String): List<Biljka> =withContext(Dispatchers.IO){
+    suspend fun getPlantsWithFlowerColor(flower_color:String,substr:String): List<Biljka> =withContext(Dispatchers.IO){
             var biljke= mutableListOf<Biljka>()
             var listaIdova= mutableListOf<Int>()
             try{
@@ -127,7 +137,7 @@ class TrefleDAO {
                                 val latinskiNaziv=response2.body()?.data?.scientificName
                                 val naziv=nazivnepotpun.plus(" ($latinskiNaziv)")
                                 val listaZemljista=mutableListOf<Zemljiste>()
-                                val listaKlima=mutableListOf<KlimatskiTip>()
+                                var listaKlima=mutableListOf<KlimatskiTip>()
                                 val medUpozorenje=""
                                 //vidjet jel jestivo
                                 val jestivo=response2.body()?.data?.mainSpecies?.edible
@@ -150,11 +160,11 @@ class TrefleDAO {
                                 val light= response2.body()?.data?.mainSpecies!!.growth.light
                                 val atmosfera=response2.body()?.data?.mainSpecies?.growth?.atmosphericHumidity
                                 if(light!=null && atmosfera!=null){
-                                    val klima=getKlima(light,atmosfera)
-                                    if(klima!=null) listaKlima.add(klima)
+                                    val klime=getKlima(light,atmosfera)
+                                    listaKlima=klime
                                 }
                                 var biljka=Biljka(naziv,porodica,medUpozorenje, emptyList(),null,
-                                    mutableListOf(),listaKlima,listaZemljista)
+                                    mutableListOf(),listaKlima,listaZemljista,"")
 
                                 biljke.add(biljka)
                             }
@@ -165,9 +175,9 @@ class TrefleDAO {
                 e.printStackTrace()
             }
             return@withContext biljke
-        }*/
+        }
 
-    suspend fun getPlantsWithFlowerColor(flowerColor:String,substr:String): List<Biljka> =withContext(Dispatchers.IO){
+    /*suspend fun getPlantsWithFlowerColor(flowerColor:String,substr:String): List<Biljka> =withContext(Dispatchers.IO){
         var biljke= mutableListOf<Biljka>()
         try{
             val first_response=ApiAdapter.retrofit.getPlantsByFlowerColor(flowerColor)
@@ -176,7 +186,8 @@ class TrefleDAO {
                 if(!plants.isNullOrEmpty()){
                     //provjera koje biljke unutar liste imaju unutar scientific name podstring substr
                     for(plant in plants){
-                        if(plant.scientificName.lowercase().contains(substr.lowercase())){
+                        Log.d("biljka",plant.toString())
+                        if(plant.commonName.lowercase().contains(substr.lowercase())){ //il scientific
                             //ako sadrzi taj podstring sad vadimo ostale podatke za biljku
                             val second_response=ApiAdapter.retrofit.getPlantById(plant.id)
                             if(second_response.isSuccessful){
@@ -216,7 +227,7 @@ class TrefleDAO {
                                     listaKlima=klime
                                 }
                                 var biljka=Biljka(naziv,porodica,medUpozorenje, emptyList(),null,
-                                    mutableListOf(),listaKlima,listaZemljista)
+                                    mutableListOf(),listaKlima,listaZemljista,"")
                                 Log.d("biljka",biljka.toString())
                                 biljke.add(biljka)
                             }
@@ -228,7 +239,7 @@ class TrefleDAO {
             e.printStackTrace()
         }
         return@withContext biljke
-    }
+    }*/
 
     fun getKlima(light: Int, humidity: Int): MutableList<KlimatskiTip>{
         var listaKlima= mutableListOf<KlimatskiTip>()
