@@ -1,15 +1,21 @@
 package com.example.projekat
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.util.TypedValue
 import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -36,6 +42,7 @@ class MainActivity : AppCompatActivity() {
     private var listaBoja=getBoje()
     private var rezultatPretrage=mutableListOf<Biljka>()
     private var odabranaBoja=""
+    private lateinit var spinnerRV:Spinner
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -45,10 +52,17 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        biljkeView=findViewById(R.id.biljkeRV)
-        biljkeView.layoutManager=LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
-
         botanickeFuncionalnosti=findViewById(R.id.botanickeFunkcionalnosti)
+        spinnerRV=findViewById(R.id.modSpinner)
+        biljkeView=findViewById(R.id.biljkeRV)
+        biljkeView.layoutManager=LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false)
+
+        /*val visinaSpinnera=spinnerRV.height
+        val visinaBotanickog=botanickeFuncionalnosti.height
+        Log.d("visinaspinnera",visinaSpinnera.toString())
+        Log.d("visinabot",visinaBotanickog.toString())
+        biljkeView.setPadding(0,0,0,visinaBotanickog+visinaSpinnera)*/
+
         pretragaET=findViewById(R.id.pretragaET)
         brzaPretraga=findViewById(R.id.brzaPretraga)
         bojaSPIN=findViewById(R.id.bojaSPIN)
@@ -63,7 +77,6 @@ class MainActivity : AppCompatActivity() {
         val spinner_adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, opcije)
         spinner_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-        val spinnerRV=findViewById<Spinner>(R.id.modSpinner)
         spinnerRV.adapter=spinner_adapter
 
         biljkeAdapter1=BiljkaAdapterMedicinska(mutableListOf())
@@ -74,8 +87,13 @@ class MainActivity : AppCompatActivity() {
             @SuppressLint("SuspiciousIndentation")
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val selectedOption: String = parent?.getItemAtPosition(position).toString()
+                val visinaSpinnera = spinnerRV.height
+                val visinaBotanickog = botanickeFuncionalnosti.height
+                Log.d("visinaspinnera",visinaSpinnera.toString())
+                Log.d("visinabot",visinaBotanickog.toString())
                 if(selectedOption=="Medicinski")
                 {
+                    biljkeView.setPadding(0,0,0,visinaSpinnera)
                     botanickeFuncionalnosti.visibility=View.GONE
                     pretragaET.setText("")
                     biljkeAdapter2.postaviNaFalse()
@@ -86,6 +104,7 @@ class MainActivity : AppCompatActivity() {
                     biljkeAdapter1.updateBiljke(biljke)
                 }else if(selectedOption=="Botanički")
                 {
+                    biljkeView.setPadding(0,0,0,visinaSpinnera+visinaBotanickog)
                     botanickeFuncionalnosti.visibility=View.VISIBLE //kad je u botanickim da se vidi
                     biljkeView.adapter=biljkeAdapter2
                     if (filtriranaLista.isNotEmpty()) {
@@ -94,6 +113,7 @@ class MainActivity : AppCompatActivity() {
                     biljkeAdapter2.updateBiljke(biljke)
                 }else
                 {
+                    biljkeView.setPadding(0,0,0,visinaSpinnera)
                     botanickeFuncionalnosti.visibility=View.GONE
                     pretragaET.setText("")
                     biljkeAdapter2.postaviNaFalse()
@@ -109,6 +129,10 @@ class MainActivity : AppCompatActivity() {
                 biljkeView.adapter=biljkeAdapter1
                 biljkeAdapter1.updateBiljke(biljke)
             }
+        }
+
+        if(!NetworkUtils.isNetworkAvailable(this)){
+            Toast.makeText(this,"Nema konekcije da se dobave slike biljaka", Toast.LENGTH_LONG).show()
         }
 
         bojaSPIN.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{

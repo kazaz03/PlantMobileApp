@@ -13,7 +13,7 @@ import java.net.URL
 class TrefleDAO {
 
         private var defaultBitmap: Bitmap=Bitmap.createBitmap(100,100,Bitmap.Config.ARGB_8888).apply {
-            eraseColor(android.graphics.Color.WHITE)
+            eraseColor(android.graphics.Color.GRAY)
         }
         suspend fun getImage(plant: Biljka): Bitmap = withContext(Dispatchers.IO) {
             try {
@@ -48,7 +48,7 @@ class TrefleDAO {
                         //sad pozivat ovu za id
                         if(plants[0].family!="") plant.porodica=plants[0].family
                         //ispravljanje i naziva mozda i ne treba dodat
-                        //if(plants[0].commonName!="") plant.naziv=plants[0].commonName.plus(" ($latinskiNaziv)")
+                        if(plants[0].commonName!="") plant.naziv=plants[0].commonName.plus(" ($latinskiNaziv)")
                         val response2=ApiAdapter.retrofit.getPlantById(plantId)
                         if(response2.isSuccessful){
                             val plantMainSpecies= response2.body()?.data?.mainSpecies
@@ -56,16 +56,16 @@ class TrefleDAO {
                             if(edibleOrNot!=null && edibleOrNot.equals(false))
                             {
                                 plant.jela.clear()
-                                val staroMedicinskoUpozorenje=plant.medicinskoUpozorenje
-                                val novo=staroMedicinskoUpozorenje.plus(" NIJE JESTIVO")
-                                plant.medicinskoUpozorenje=novo
+                                val staro=plant.medicinskoUpozorenje
+                                val novo=" NIJE JESTIVO"
+                                plant.medicinskoUpozorenje=staro+novo
                             }
                             val toxicityBiljke=plantMainSpecies?.specifications?.toxicity
                             if(toxicityBiljke!=null){
                                 if(!plant.medicinskoUpozorenje.contains("TOKSIČNO")){
                                     val staro=plant.medicinskoUpozorenje
-                                    val novo=staro.plus("TOKSIČNO")
-                                    plant.medicinskoUpozorenje=novo
+                                    val novo=" TOKSIČNO"
+                                    plant.medicinskoUpozorenje=staro+novo
                                 }
                             }
                             val soilTextureOfPlant=plantMainSpecies?.growth?.soil_texture
@@ -82,21 +82,12 @@ class TrefleDAO {
                                 }
                             }
                             }
-
                             val lightOfPlant=plantMainSpecies?.growth?.light
                             val atmosphericHumidityOfPlant=plantMainSpecies?.growth?.atmosphericHumidity
                             if(lightOfPlant!=null && atmosphericHumidityOfPlant!=null){
-                                val odgovarajucaKlima=getKlima(lightOfPlant,atmosphericHumidityOfPlant)
-                                var brojac=0
-                                for(klima in plant.klimatskiTipovi) {
-                                    if (odgovarajucaKlima != null) {
-                                        if(!klima.opis.equals(odgovarajucaKlima.opis)){
-                                            plant.klimatskiTipovi.remove(klima)
-                                            if(brojac==0) plant.klimatskiTipovi.add(odgovarajucaKlima)
-                                            brojac++
-                                        }
-                                    }
-                                }
+                                val odgovarajuceKlime=getKlima(lightOfPlant,atmosphericHumidityOfPlant)
+                                plant.klimatskiTipovi.clear()
+                                plant.klimatskiTipovi=odgovarajuceKlime
                             }
                         }
                     }
@@ -194,18 +185,22 @@ class TrefleDAO {
                                 val latinskiNaziv=second_response.body()?.data?.scientificName
                                 val naziv=nazivnepotpun.plus(" ($latinskiNaziv)")
                                 val listaZemljista=mutableListOf<Zemljiste>()
-                                val listaKlima=mutableListOf<KlimatskiTip>()
-                                val medUpozorenje=""
+                                var listaKlima=mutableListOf<KlimatskiTip>()
+                                var medUpozorenje=""
                                 //vidjet jel jestivo
                                 val jestivo=second_response.body()?.data?.mainSpecies?.edible
                                 if(jestivo!=null && jestivo.equals(false))
                                 {
-                                    medUpozorenje.plus("NIJE JESTIVO")
+                                    val staro=medUpozorenje
+                                    val novo=" NIJE JESTIVO"
+                                    medUpozorenje=staro+novo
                                 }
                                 val toksicno=second_response.body()?.data?.mainSpecies?.specifications?.toxicity
                                 if(toksicno!=null)
                                 {
-                                    medUpozorenje.plus(" TOKSIČNO")
+                                    val staro=medUpozorenje
+                                    val novo=" TOKSIČNO"
+                                    medUpozorenje=staro+novo
                                 }
                                 if(porodica==null) porodica=""
                                 //klimatski tip i zemljisni tip da se uzme
@@ -217,12 +212,12 @@ class TrefleDAO {
                                 val light= second_response.body()?.data?.mainSpecies!!.growth.light
                                 val atmosfera=second_response.body()?.data?.mainSpecies?.growth?.atmosphericHumidity
                                 if(light!=null && atmosfera!=null){
-                                    val klima=getKlima(light,atmosfera)
-                                    if(klima!=null) listaKlima.add(klima)
+                                    val klime=getKlima(light,atmosfera)
+                                    listaKlima=klime
                                 }
                                 var biljka=Biljka(naziv,porodica,medUpozorenje, emptyList(),null,
                                     mutableListOf(),listaKlima,listaZemljista)
-
+                                Log.d("biljka",biljka.toString())
                                 biljke.add(biljka)
                             }
                         }
@@ -235,14 +230,15 @@ class TrefleDAO {
         return@withContext biljke
     }
 
-    fun getKlima(light: Int, humidity: Int): KlimatskiTip?{
-        if(light in arrayOf(6,7,8,9) && humidity in arrayOf(1,2,3,4,5)) return KlimatskiTip.SREDOZEMNA
-        else if(light in arrayOf(8,9,10) && humidity in arrayOf(7,8,9,10)) return KlimatskiTip.TROPSKA
-        else if(light in arrayOf(6,7,8,9) && humidity in arrayOf(5,6,7,8)) return KlimatskiTip.SUBTROPSKA
-        else if(light in arrayOf(4,5,6,7) && humidity in arrayOf(3,4,5,6,7)) return KlimatskiTip.UMJERENA
-        else if (light in arrayOf(7,8,9) && humidity in arrayOf(1,2)) return KlimatskiTip.SUHA
-        else if(light in arrayOf(0,1,2,3,4,5) && humidity in arrayOf(3,4,5,6,7)) return KlimatskiTip.PLANINSKA
-        return null
+    fun getKlima(light: Int, humidity: Int): MutableList<KlimatskiTip>{
+        var listaKlima= mutableListOf<KlimatskiTip>()
+        if(light in arrayOf(6,7,8,9) && humidity in arrayOf(1,2,3,4,5)) listaKlima.add(KlimatskiTip.SREDOZEMNA)
+        if(light in arrayOf(8,9,10) && humidity in arrayOf(7,8,9,10)) listaKlima.add(KlimatskiTip.TROPSKA)
+        if(light in arrayOf(6,7,8,9) && humidity in arrayOf(5,6,7,8)) listaKlima.add(KlimatskiTip.SUBTROPSKA)
+        if(light in arrayOf(4,5,6,7) && humidity in arrayOf(3,4,5,6,7)) listaKlima.add(KlimatskiTip.UMJERENA)
+        if (light in arrayOf(7,8,9) && humidity in arrayOf(1,2)) listaKlima.add(KlimatskiTip.SUHA)
+        if(light in arrayOf(0,1,2,3,4,5) && humidity in arrayOf(3,4,5,6,7)) listaKlima.add(KlimatskiTip.PLANINSKA)
+        return listaKlima
         //ovdje ispravit ako je 0 do 5 da bude planinski i da bude null
     }
 

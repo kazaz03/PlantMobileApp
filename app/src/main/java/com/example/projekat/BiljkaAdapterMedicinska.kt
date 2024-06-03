@@ -6,12 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import com.example.projekat.TrefleDAO
+import com.example.projekat.NetworkUtils
 
 class BiljkaAdapterMedicinska(var biljke: List<Biljka>): RecyclerView.Adapter<BiljkaAdapterMedicinska.BiljkaViewHolder>() {
 
@@ -63,6 +65,7 @@ class BiljkaAdapterMedicinska(var biljke: List<Biljka>): RecyclerView.Adapter<Bi
     override fun onBindViewHolder(holder: BiljkaViewHolder, position: Int) {
         val biljka=biljke[position];
         val scope = CoroutineScope(Job() + Dispatchers.Main)
+
         scope.launch{
             val image=trefleDAO.getImage(biljka)
             holder.slikaBiljke.setImageBitmap(image)
