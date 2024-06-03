@@ -57,12 +57,6 @@ class MainActivity : AppCompatActivity() {
         biljkeView=findViewById(R.id.biljkeRV)
         biljkeView.layoutManager=LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false)
 
-        /*val visinaSpinnera=spinnerRV.height
-        val visinaBotanickog=botanickeFuncionalnosti.height
-        Log.d("visinaspinnera",visinaSpinnera.toString())
-        Log.d("visinabot",visinaBotanickog.toString())
-        biljkeView.setPadding(0,0,0,visinaBotanickog+visinaSpinnera)*/
-
         pretragaET=findViewById(R.id.pretragaET)
         brzaPretraga=findViewById(R.id.brzaPretraga)
         bojaSPIN=findViewById(R.id.bojaSPIN)
@@ -104,7 +98,7 @@ class MainActivity : AppCompatActivity() {
                     biljkeAdapter1.updateBiljke(biljke)
                 }else if(selectedOption=="Botanički")
                 {
-                    biljkeView.setPadding(0,0,0,visinaSpinnera+visinaBotanickog)
+                    biljkeView.setPadding(0,0,0,visinaSpinnera+visinaBotanickog) //kad je botanicki da je veci padding
                     botanickeFuncionalnosti.visibility=View.VISIBLE //kad je u botanickim da se vidi
                     biljkeView.adapter=biljkeAdapter2
                     if (filtriranaLista.isNotEmpty()) {
