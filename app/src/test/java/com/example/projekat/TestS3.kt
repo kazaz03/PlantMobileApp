@@ -1,19 +1,25 @@
 package com.example.projekat
 
+import android.graphics.Bitmap
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.JUnitSoftAssertions
 import org.junit.Assert.assertTrue
+import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.Mock
+import org.mockito.Mockito
+import org.mockito.junit.MockitoJUnitRunner
 
 
+//@RunWith(MockitoJUnitRunner::class)
 @RunWith(JUnit4::class)
 class TestS3 {
     @get:Rule
     var softAssert = JUnitSoftAssertions()
-
+    //@Mock lateinit var bitmap: Bitmap
     @Test
     fun fixBosiljakTest() = runBlocking{
         var fixed = TrefleDAO().fixData(    Biljka(
@@ -27,8 +33,7 @@ class TestS3 {
             profilOkusa = ProfilOkusaBiljke.BEZUKUSNO,
             jela = listOf("Salata od paradajza", "Punjene tikvice"),
             klimatskiTipovi = listOf(KlimatskiTip.SREDOZEMNA, KlimatskiTip.SUBTROPSKA),
-            zemljisniTipovi = listOf(Zemljiste.PJESKOVITO, Zemljiste.ILOVACA),
-            slika = "bosiljak"
+            zemljisniTipovi = listOf(Zemljiste.PJESKOVITO, Zemljiste.ILOVACA)
         ))
         softAssert.assertThat(fixed.naziv).withFailMessage("T1.1 - naziv should contain \"Ocium basilicum\"").contains("Ocimum basilicum")
         softAssert.assertThat(fixed.porodica).withFailMessage("T1.2 - porodica should contain \"Lamiaceae\"").contains("Lamiaceae")
@@ -50,8 +55,7 @@ class TestS3 {
             profilOkusa = ProfilOkusaBiljke.BEZUKUSNO,
             jela = listOf("Salata od paradajza", "Punjene tikvice"),
             klimatskiTipovi = listOf(KlimatskiTip.SREDOZEMNA, KlimatskiTip.SUBTROPSKA),
-            zemljisniTipovi = listOf(Zemljiste.PJESKOVITO, Zemljiste.ILOVACA),
-            slika = "bosiljak"
+            zemljisniTipovi = listOf(Zemljiste.PJESKOVITO, Zemljiste.ILOVACA)
         ))
 
         softAssert.assertThat(fixed.naziv).withFailMessage("T2.1 - naziv should contain \"Epipactis helleborine\"").contains("Epipactis helleborine")
@@ -65,7 +69,6 @@ class TestS3 {
         var plants = TrefleDAO().getPlantsWithFlowerColor("purple","rosa")
         assertTrue("T3.1 - should contain \"Rosa pendulina\"",plants.find { biljka -> biljka.naziv.contains("Rosa pendulina",ignoreCase = true) }!=null)
     }
-
     @Test
     fun getFlowerRampionBlue()= runBlocking {
         var plants = TrefleDAO().getPlantsWithFlowerColor("blue","rampion")

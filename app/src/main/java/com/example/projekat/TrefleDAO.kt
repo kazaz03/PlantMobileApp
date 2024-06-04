@@ -1,5 +1,6 @@
 package com.example.projekat
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
@@ -10,9 +11,19 @@ import java.net.URL
 
 class TrefleDAO {
 
-    private var defaultBitmap: Bitmap=Bitmap.createBitmap(100,100,Bitmap.Config.ARGB_8888).apply {
-        eraseColor(android.graphics.Color.GRAY)
+    private lateinit var context: Context
+
+    fun setContext(context: Context) {
+        this.context = context
     }
+
+    private fun getDefaultBitmap(): Bitmap {
+        return BitmapFactory.decodeResource(context.resources, R.drawable.defaultbiljka)
+    }
+
+    /*private var defaultBitmap: Bitmap=Bitmap.createBitmap(100,100,Bitmap.Config.ARGB_8888).apply {
+        eraseColor(android.graphics.Color.GRAY)
+    }*/
     suspend fun getImage(plant: Biljka): Bitmap = withContext(Dispatchers.IO) {
         try {
             val latinskiNaziv=getLatinskiNaziv(plant.naziv)
@@ -30,7 +41,7 @@ class TrefleDAO {
         } catch (e: IOException) {
             e.printStackTrace()
         }
-        return@withContext defaultBitmap
+        return@withContext getDefaultBitmap()//defaultBitmap
     }
 
     suspend fun fixData(plant: Biljka): Biljka= withContext(Dispatchers.IO){
@@ -103,8 +114,8 @@ class TrefleDAO {
             e.printStackTrace()
         }
         val novabiljka=Biljka(ime,porodica,medicinskoUpozorenjeTekst,medicinskeKoristi,profilokusa,
-            jelaBiljke.toList(),listaKlima.toList(),listaZemljista.toList(),"")
-        Log.d("novabiljka",novabiljka.toString())
+            jelaBiljke.toList(),listaKlima.toList(),listaZemljista.toList())
+        //Log.d("novabiljka",novabiljka.toString())
         return@withContext novabiljka
     }
 
@@ -119,17 +130,21 @@ class TrefleDAO {
                     if(!plants.isNullOrEmpty()){
                         for(plant in plants){
                             listaIdova.add(plant.id)
+                            //Log.d("dohvacene biljke",plant.toString())
                         }
                     }
                     //sad pozivamo da nadjemo preko id ostale atribute
                     for(id in listaIdova)
                     {
-                        Log.d("idovi biljaka",id.toString())
+                        //Log.d("idovi biljaka",id.toString())
                         val response2=ApiAdapter.retrofit.getPlantById(id)
                         if(response2.isSuccessful){
                             //ako uspije vratit biljku
                             val bojeBiljke=response2.body()?.data?.mainSpecies?.flower?.color
-                            if(bojeBiljke!=null && bojeBiljke.contains(flower_color)){
+                            val naziv=response2.body()?.data?.commonName
+                            val latinsko=response2.body()?.data?.scientificName
+                            if(bojeBiljke!=null && bojeBiljke.contains(flower_color) &&
+                                ((naziv!=null && naziv.lowercase().contains(substr.lowercase())) || (latinsko!=null && latinsko.lowercase().contains(substr.lowercase())))){
                                 /*gledat da li ima i substring u necemu nez jel u nazivu il u latinskom nazivu*/
                                 //sad treba napravit biljku
                                 val nazivnepotpun=response2.body()?.data?.commonName
@@ -138,17 +153,21 @@ class TrefleDAO {
                                 val naziv=nazivnepotpun.plus(" ($latinskiNaziv)")
                                 val listaZemljista=mutableListOf<Zemljiste>()
                                 var listaKlima=mutableListOf<KlimatskiTip>()
-                                val medUpozorenje=""
+                                var medUpozorenje=""
                                 //vidjet jel jestivo
                                 val jestivo=response2.body()?.data?.mainSpecies?.edible
                                 if(jestivo!=null && jestivo.equals(false))
                                 {
-                                    medUpozorenje.plus("NIJE JESTIVO")
+                                    val staro=medUpozorenje
+                                    val novo=" NIJE JESTIVO"
+                                    medUpozorenje=staro+novo
                                 }
                                 val toksicno=response2.body()?.data?.mainSpecies?.specifications?.toxicity
                                 if(toksicno!=null)
                                 {
-                                    medUpozorenje.plus(" TOKSIČNO")
+                                    val staro=medUpozorenje
+                                    val novo=" TOKSIČNO"
+                                    medUpozorenje=staro+novo
                                 }
                                 if(porodica==null) porodica=""
                                 //klimatski tip i zemljisni tip da se uzme
@@ -164,7 +183,7 @@ class TrefleDAO {
                                     listaKlima=klime
                                 }
                                 var biljka=Biljka(naziv,porodica,medUpozorenje, emptyList(),null,
-                                    mutableListOf(),listaKlima,listaZemljista,"")
+                                    mutableListOf(),listaKlima,listaZemljista)
 
                                 biljke.add(biljka)
                             }
@@ -227,7 +246,7 @@ class TrefleDAO {
                                     listaKlima=klime
                                 }
                                 var biljka=Biljka(naziv,porodica,medUpozorenje, emptyList(),null,
-                                    mutableListOf(),listaKlima,listaZemljista,"")
+                                    mutableListOf(),listaKlima,listaZemljista)
                                 Log.d("biljka",biljka.toString())
                                 biljke.add(biljka)
                             }

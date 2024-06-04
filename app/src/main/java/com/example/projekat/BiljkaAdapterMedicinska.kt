@@ -1,5 +1,6 @@
 package com.example.projekat
 
+import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +16,7 @@ import kotlinx.coroutines.launch
 import com.example.projekat.TrefleDAO
 import com.example.projekat.NetworkUtils
 
-class BiljkaAdapterMedicinska(var biljke: List<Biljka>): RecyclerView.Adapter<BiljkaAdapterMedicinska.BiljkaViewHolder>() {
+class BiljkaAdapterMedicinska(var context: Context,var biljke: List<Biljka>): RecyclerView.Adapter<BiljkaAdapterMedicinska.BiljkaViewHolder>() {
 
     val tipSlike = mapOf(
         "Bosiljak (Ocimum basilicum)" to R.drawable.bosiljak,
@@ -33,7 +34,6 @@ class BiljkaAdapterMedicinska(var biljke: List<Biljka>): RecyclerView.Adapter<Bi
     //interfejs za klik
 
     private var itemClickListener: OnItemClickListener? = null
-
     private var trefleDAO=TrefleDAO()
 
     interface OnItemClickListener {
@@ -63,6 +63,7 @@ class BiljkaAdapterMedicinska(var biljke: List<Biljka>): RecyclerView.Adapter<Bi
     }
 
     override fun onBindViewHolder(holder: BiljkaViewHolder, position: Int) {
+        trefleDAO.setContext(context)
         val biljka=biljke[position];
         val scope = CoroutineScope(Job() + Dispatchers.Main)
 

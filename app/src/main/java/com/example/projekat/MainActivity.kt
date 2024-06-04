@@ -1,6 +1,7 @@
 package com.example.projekat
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -31,15 +32,16 @@ class MainActivity : AppCompatActivity() {
     private lateinit var biljkeAdapter2: BiljkaAdapterBotanicka
     private lateinit var biljkeAdapter3: BiljkaAdapterKuharska
     private var biljke = getBiljke()
-    private val trefleDAO=TrefleDAO()
     private lateinit var botanickeFuncionalnosti: LinearLayout
     private lateinit var pretragaET: EditText
     private lateinit var brzaPretraga: Button
     private lateinit var bojaSPIN: Spinner
+    private var trefleDAO=TrefleDAO()
     private var listaBoja=getBoje()
     private var rezultatPretrage=mutableListOf<Biljka>()
     private var odabranaBoja=""
     private lateinit var spinnerRV:Spinner
+    private lateinit var context:Context
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -49,6 +51,8 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        context=this
+        trefleDAO.setContext(context)
         botanickeFuncionalnosti=findViewById(R.id.botanickeFunkcionalnosti)
         spinnerRV=findViewById(R.id.modSpinner)
         biljkeView=findViewById(R.id.biljkeRV)
@@ -70,9 +74,9 @@ class MainActivity : AppCompatActivity() {
 
         spinnerRV.adapter=spinner_adapter
 
-        biljkeAdapter1=BiljkaAdapterMedicinska(mutableListOf())
-        biljkeAdapter2= BiljkaAdapterBotanicka(mutableListOf())
-        biljkeAdapter3=BiljkaAdapterKuharska(mutableListOf())
+        biljkeAdapter1=BiljkaAdapterMedicinska(context,mutableListOf())
+        biljkeAdapter2= BiljkaAdapterBotanicka(context,mutableListOf())
+        biljkeAdapter3=BiljkaAdapterKuharska(context,mutableListOf())
 
         spinnerRV.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             @SuppressLint("SuspiciousIndentation")
@@ -116,7 +120,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                biljkeAdapter1=BiljkaAdapterMedicinska(listOf())
+                biljkeAdapter1=BiljkaAdapterMedicinska(context,listOf())
                 biljkeView.adapter=biljkeAdapter1
                 biljkeAdapter1.updateBiljke(biljke)
             }
@@ -178,7 +182,7 @@ class MainActivity : AppCompatActivity() {
         brzaPretraga.setOnClickListener {
             val scope=CoroutineScope(Job() + Dispatchers.Main)
             scope.launch{
-                rezultatPretrage=trefleDAO.getPlantsWithFlowerColor(odabranaBoja,pretragaET.text.toString()).toMutableList()
+                rezultatPretrage=trefleDAO.getPlantsWithFlowerColor(odabranaBoja,pretragaET.text.toString().trim()).toMutableList()
                 biljkeAdapter2.postaviNaTrue()
                 biljkeAdapter2.updateBiljke(rezultatPretrage)
             }
@@ -272,16 +276,15 @@ class MainActivity : AppCompatActivity() {
                 naziv =naziv2.toString(), porodica =porodica2.toString(),
                 medicinskoUpozorenje =medicinskoUpozorenje2.toString(), medicinskeKoristi =medicinskeKoristiLista.toList(),
                 profilOkusa =Okus2, jela = listaJela.toMutableList(), klimatskiTipovi = klimatskiTipoviLista.toMutableList(),
-                zemljisniTipovi = zemljisniTipoviLista,"")
+                zemljisniTipovi = zemljisniTipoviLista)
 
             var novaPopravljenaBiljka=Biljka("","","", emptyList(),null, emptyList(),
-               emptyList(), emptyList(),""
-            )
+               emptyList(), emptyList())
             val scope= CoroutineScope(Job() + Dispatchers.Main)
             scope.launch{
                 novaPopravljenaBiljka=trefleDAO.fixData(novabiljka)
                 Log.d("nova2",novaPopravljenaBiljka.toString())
-                dodajNoveBiljke(novaPopravljenaBiljka)
+                if(naziv2!=null)dodajNoveBiljke(novaPopravljenaBiljka)
                 biljke= getBiljke()
                 biljkeAdapter1.updateBiljke(biljke)
                 biljkeAdapter2.updateBiljke(biljke)

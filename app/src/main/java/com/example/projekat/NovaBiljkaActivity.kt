@@ -252,7 +252,6 @@ class NovaBiljkaActivity : AppCompatActivity() {
                     }
                 }
                 intent.putExtra("medicinskeKoristi",medicinskeKoristi.toString())
-
                 //odabrani klimatski tipovi
                 val klimatskiTipovi=StringBuilder()
                 val checkedPositions2 = listaKlima.checkedItemPositions

@@ -87,4 +87,8 @@ dependencies {
     testImplementation ("org.assertj:assertj-core:3.22.0")
 
     android.buildFeatures.buildConfig=true
+
+    //mockanje
+    testImplementation("org.mockito.kotlin:mockito-kotlin:3.2.0")
+
 }

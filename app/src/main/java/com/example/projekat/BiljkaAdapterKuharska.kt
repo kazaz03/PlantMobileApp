@@ -1,5 +1,6 @@
 package com.example.projekat
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class BiljkaAdapterKuharska(var biljke: List<Biljka>): RecyclerView.Adapter<BiljkaAdapterKuharska.BiljkaViewHolder>()  {
+class BiljkaAdapterKuharska(var context: Context, var biljke: List<Biljka>): RecyclerView.Adapter<BiljkaAdapterKuharska.BiljkaViewHolder>()  {
     val tipSlike = mapOf(
         "Bosiljak (Ocimum basilicum)" to R.drawable.bosiljak,
         "Nana (Mentha spicata)" to R.drawable.nana,
@@ -26,9 +27,7 @@ class BiljkaAdapterKuharska(var biljke: List<Biljka>): RecyclerView.Adapter<Bilj
     )
 
     private var itemClickListener: OnItemClickListener? = null
-
     private var trefleDAO=TrefleDAO()
-
     interface OnItemClickListener {
         fun onItemClick(biljka: Biljka)
     }
@@ -56,11 +55,7 @@ class BiljkaAdapterKuharska(var biljke: List<Biljka>): RecyclerView.Adapter<Bilj
 
     override fun onBindViewHolder(holder: BiljkaViewHolder, position: Int) {
         val biljka=biljke[position];
-        /*val ImageId = getImageId(biljka.naziv)
-        if (ImageId != null) {
-            holder.slikaBiljke.setImageResource(ImageId)
-        }*/
-
+        trefleDAO.setContext(context)
         val scope = CoroutineScope(Job() + Dispatchers.Main)
         scope.launch{
             val image=trefleDAO.getImage(biljka)

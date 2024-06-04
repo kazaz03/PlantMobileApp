@@ -1,5 +1,6 @@
 package com.example.projekat
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class BiljkaAdapterBotanicka(var biljke: List<Biljka>): RecyclerView.Adapter<BiljkaAdapterBotanicka.BiljkaViewHolder>() {
+class BiljkaAdapterBotanicka(var context: Context, var biljke: List<Biljka>): RecyclerView.Adapter<BiljkaAdapterBotanicka.BiljkaViewHolder>() {
     val tipSlike = mapOf(
         "Bosiljak (Ocimum basilicum)" to R.drawable.bosiljak,
         "Nana (Mentha spicata)" to R.drawable.nana,
@@ -65,11 +66,7 @@ class BiljkaAdapterBotanicka(var biljke: List<Biljka>): RecyclerView.Adapter<Bil
 
     override fun onBindViewHolder(holder: BiljkaViewHolder, position: Int) {
         val biljka=biljke[position];
-        /*val ImageId = getImageId(biljka.naziv)
-        if (ImageId != null) {
-            holder.slikaBiljke.setImageResource(ImageId)
-        }*/
-
+        trefleDAO.setContext(context)
         val scope = CoroutineScope(Job() + Dispatchers.Main)
         scope.launch{
             val image=trefleDAO.getImage(biljka)
