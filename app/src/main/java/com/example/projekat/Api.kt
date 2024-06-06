@@ -4,6 +4,7 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
+import retrofit2.http.QueryMap
 
 interface Api {
     @GET("plants/search")
@@ -20,9 +21,10 @@ interface Api {
     ): Response<PlantDetailResponse>
 
     //flower color poziv
-    @GET("plants")
+    @GET("plants/search")
     suspend fun getPlantsByFlowerColor(
-        @Query("filter[flower_color]") color: String,
+        @Query("q") query: String,
+        @QueryMap filters: Map<String,String>,
         @Query("token") apiKey: String=BuildConfig.API_KEY
     ): Response<GetPlantsResponse>
 }

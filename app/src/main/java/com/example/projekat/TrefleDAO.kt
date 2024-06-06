@@ -4,8 +4,13 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import java.io.IOException
 import java.net.URL
 
@@ -119,7 +124,7 @@ class TrefleDAO {
         return@withContext novabiljka
     }
 
-    suspend fun getPlantsWithFlowerColor(flower_color:String,substr:String): List<Biljka> =withContext(Dispatchers.IO){
+    /*suspend fun getPlantsWithFlowerColor(flower_color:String,substr:String): List<Biljka> =withContext(Dispatchers.IO){
             var biljke= mutableListOf<Biljka>()
             var listaIdova= mutableListOf<Int>()
             try{
@@ -194,26 +199,29 @@ class TrefleDAO {
                 e.printStackTrace()
             }
             return@withContext biljke
-        }
+        }*/
 
-    /*suspend fun getPlantsWithFlowerColor(flowerColor:String,substr:String): List<Biljka> =withContext(Dispatchers.IO){
+
+    suspend fun getPlantsWithFlowerColor(flowerColor:String,substr:String): List<Biljka> =withContext(Dispatchers.IO){
         var biljke= mutableListOf<Biljka>()
         try{
-            val first_response=ApiAdapter.retrofit.getPlantsByFlowerColor(flowerColor)
+            val filters=mapOf("filter[flower_color]" to flowerColor)
+            val first_response=ApiAdapter.retrofit.getPlantsByFlowerColor(substr,filters)
             if(first_response.isSuccessful){
                 val plants=first_response.body()?.data
                 if(!plants.isNullOrEmpty()){
                     //provjera koje biljke unutar liste imaju unutar scientific name podstring substr
                     for(plant in plants){
-                        Log.d("biljka",plant.toString())
-                        if(plant.commonName.lowercase().contains(substr.lowercase())){ //il scientific
+                        val ime=plant.commonName
+                        val latinsko=plant.scientificName
+                        //Log.d("biljka",plant.toString())
+                        if((ime!=null && ime.lowercase().contains(substr.lowercase())) ||
+                            (latinsko!=null && latinsko.lowercase().contains(substr.lowercase()))){ //il scientific
                             //ako sadrzi taj podstring sad vadimo ostale podatke za biljku
                             val second_response=ApiAdapter.retrofit.getPlantById(plant.id)
                             if(second_response.isSuccessful){
-                                val nazivnepotpun=second_response.body()?.data?.commonName
                                 var porodica=second_response.body()?.data?.mainSpecies?.family
-                                val latinskiNaziv=second_response.body()?.data?.scientificName
-                                val naziv=nazivnepotpun.plus(" ($latinskiNaziv)")
+                                val naziv=ime.plus(" ($latinsko)")
                                 val listaZemljista=mutableListOf<Zemljiste>()
                                 var listaKlima=mutableListOf<KlimatskiTip>()
                                 var medUpozorenje=""
@@ -247,7 +255,6 @@ class TrefleDAO {
                                 }
                                 var biljka=Biljka(naziv,porodica,medUpozorenje, emptyList(),null,
                                     mutableListOf(),listaKlima,listaZemljista)
-                                Log.d("biljka",biljka.toString())
                                 biljke.add(biljka)
                             }
                         }
@@ -258,7 +265,7 @@ class TrefleDAO {
             e.printStackTrace()
         }
         return@withContext biljke
-    }*/
+    }
 
     fun getKlima(light: Int, humidity: Int): MutableList<KlimatskiTip>{
         var listaKlima= mutableListOf<KlimatskiTip>()
