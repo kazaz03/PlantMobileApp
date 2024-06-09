@@ -181,10 +181,15 @@ class MainActivity : AppCompatActivity() {
         //brza pretraga button kad se pritisne
         brzaPretraga.setOnClickListener {
             val scope=CoroutineScope(Job() + Dispatchers.Main)
-            scope.launch{
-                rezultatPretrage=trefleDAO.getPlantsWithFlowerColor(odabranaBoja,pretragaET.text.toString().trim()).toMutableList()
-                biljkeAdapter2.postaviNaTrue()
-                biljkeAdapter2.updateBiljke(rezultatPretrage)
+            if(pretragaET.text.toString()!="") {
+                scope.launch {
+                    rezultatPretrage = trefleDAO.getPlantsWithFlowerColor(
+                        odabranaBoja,
+                        pretragaET.text.toString().trim()
+                    ).toMutableList()
+                    biljkeAdapter2.postaviNaTrue()
+                    biljkeAdapter2.updateBiljke(rezultatPretrage)
+                }
             }
         }
 

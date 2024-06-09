@@ -50,8 +50,8 @@ class TrefleDAO {
     }
 
     suspend fun fixData(plant: Biljka): Biljka= withContext(Dispatchers.IO){
-        var porodica=""
-        var ime=""
+        var porodica=plant.porodica
+        var ime=plant.naziv
         var medicinskoUpozorenjeTekst=plant.medicinskoUpozorenje
         var medicinskeKoristi=plant.medicinskeKoristi
         var jelaBiljke=plant.jela.toMutableList()
@@ -94,15 +94,10 @@ class TrefleDAO {
                         val soilTextureOfPlant=plantMainSpecies?.growth?.soil_texture
                         if(soilTextureOfPlant!=null){
                             val odgovarajuceZemljiste=getZemljiste(soilTextureOfPlant)
-                            var brojac=0
-                            for(zemljiste in listaZemljista){
-                                if (odgovarajuceZemljiste != null) {
-                                    if(!zemljiste.naziv.equals(odgovarajuceZemljiste.naziv)) {
-                                        listaZemljista.remove(zemljiste)
-                                        if(brojac==0) listaZemljista.add(odgovarajuceZemljiste)
-                                        brojac++
-                                    }
-                                }
+                            //Log.d("zemljiste",odgovarajuceZemljiste.toString())
+                            if(odgovarajuceZemljiste!=null) {
+                                listaZemljista.clear();
+                                listaZemljista.add(odgovarajuceZemljiste)
                             }
                         }
                         val lightOfPlant=plantMainSpecies?.growth?.light
@@ -124,84 +119,6 @@ class TrefleDAO {
         return@withContext novabiljka
     }
 
-    /*suspend fun getPlantsWithFlowerColor(flower_color:String,substr:String): List<Biljka> =withContext(Dispatchers.IO){
-            var biljke= mutableListOf<Biljka>()
-            var listaIdova= mutableListOf<Int>()
-            try{
-                //pretraga po dijelu
-                val response=ApiAdapter.retrofit.searchPlants(substr)
-                if(response.isSuccessful){
-                    val plants=response.body()?.data //lista biljaka od kojih sad trebam uzet id
-                    if(!plants.isNullOrEmpty()){
-                        for(plant in plants){
-                            listaIdova.add(plant.id)
-                            //Log.d("dohvacene biljke",plant.toString())
-                        }
-                    }
-                    //sad pozivamo da nadjemo preko id ostale atribute
-                    for(id in listaIdova)
-                    {
-                        //Log.d("idovi biljaka",id.toString())
-                        val response2=ApiAdapter.retrofit.getPlantById(id)
-                        if(response2.isSuccessful){
-                            //ako uspije vratit biljku
-                            val bojeBiljke=response2.body()?.data?.mainSpecies?.flower?.color
-                            val naziv=response2.body()?.data?.commonName
-                            val latinsko=response2.body()?.data?.scientificName
-                            if(bojeBiljke!=null && bojeBiljke.contains(flower_color) &&
-                                ((naziv!=null && naziv.lowercase().contains(substr.lowercase())) || (latinsko!=null && latinsko.lowercase().contains(substr.lowercase())))){
-                                /*gledat da li ima i substring u necemu nez jel u nazivu il u latinskom nazivu*/
-                                //sad treba napravit biljku
-                                val nazivnepotpun=response2.body()?.data?.commonName
-                                var porodica=response2.body()?.data?.mainSpecies?.family
-                                val latinskiNaziv=response2.body()?.data?.scientificName
-                                val naziv=nazivnepotpun.plus(" ($latinskiNaziv)")
-                                val listaZemljista=mutableListOf<Zemljiste>()
-                                var listaKlima=mutableListOf<KlimatskiTip>()
-                                var medUpozorenje=""
-                                //vidjet jel jestivo
-                                val jestivo=response2.body()?.data?.mainSpecies?.edible
-                                if(jestivo!=null && jestivo.equals(false))
-                                {
-                                    val staro=medUpozorenje
-                                    val novo=" NIJE JESTIVO"
-                                    medUpozorenje=staro+novo
-                                }
-                                val toksicno=response2.body()?.data?.mainSpecies?.specifications?.toxicity
-                                if(toksicno!=null)
-                                {
-                                    val staro=medUpozorenje
-                                    val novo=" TOKSIČNO"
-                                    medUpozorenje=staro+novo
-                                }
-                                if(porodica==null) porodica=""
-                                //klimatski tip i zemljisni tip da se uzme
-                                val soilTexture= response2.body()?.data?.mainSpecies!!.growth.soil_texture
-                                if(soilTexture!=null){
-                                    val zemljiste=getZemljiste(soilTexture)
-                                    if(zemljiste!=null) listaZemljista.add(zemljiste)
-                                }
-                                val light= response2.body()?.data?.mainSpecies!!.growth.light
-                                val atmosfera=response2.body()?.data?.mainSpecies?.growth?.atmosphericHumidity
-                                if(light!=null && atmosfera!=null){
-                                    val klime=getKlima(light,atmosfera)
-                                    listaKlima=klime
-                                }
-                                var biljka=Biljka(naziv,porodica,medUpozorenje, emptyList(),null,
-                                    mutableListOf(),listaKlima,listaZemljista)
-
-                                biljke.add(biljka)
-                            }
-                        }
-                    }
-                }
-            }catch(e: IOException){
-                e.printStackTrace()
-            }
-            return@withContext biljke
-        }*/
-
-
     suspend fun getPlantsWithFlowerColor(flowerColor:String,substr:String): List<Biljka> =withContext(Dispatchers.IO){
         var biljke= mutableListOf<Biljka>()
         try{
@@ -214,13 +131,14 @@ class TrefleDAO {
                     for(plant in plants){
                         val ime=plant.commonName
                         val latinsko=plant.scientificName
+                        val porodica=plant.family
                         //Log.d("biljka",plant.toString())
                         if((ime!=null && ime.lowercase().contains(substr.lowercase())) ||
                             (latinsko!=null && latinsko.lowercase().contains(substr.lowercase()))){ //il scientific
                             //ako sadrzi taj podstring sad vadimo ostale podatke za biljku
                             val second_response=ApiAdapter.retrofit.getPlantById(plant.id)
                             if(second_response.isSuccessful){
-                                var porodica=second_response.body()?.data?.mainSpecies?.family
+                                //var porodica=second_response.body()?.data?.mainSpecies?.family
                                 val naziv=ime.plus(" ($latinsko)")
                                 val listaZemljista=mutableListOf<Zemljiste>()
                                 var listaKlima=mutableListOf<KlimatskiTip>()
@@ -240,7 +158,6 @@ class TrefleDAO {
                                     val novo=" TOKSIČNO"
                                     medUpozorenje=staro+novo
                                 }
-                                if(porodica==null) porodica=""
                                 //klimatski tip i zemljisni tip da se uzme
                                 val soilTexture= second_response.body()?.data?.mainSpecies!!.growth.soil_texture
                                 if(soilTexture!=null){
@@ -276,7 +193,6 @@ class TrefleDAO {
         if (light in arrayOf(7,8,9) && humidity in arrayOf(1,2)) listaKlima.add(KlimatskiTip.SUHA)
         if(light in arrayOf(0,1,2,3,4,5) && humidity in arrayOf(3,4,5,6,7)) listaKlima.add(KlimatskiTip.PLANINSKA)
         return listaKlima
-        //ovdje ispravit ako je 0 do 5 da bude planinski i da bude null
     }
 
     fun getLatinskiNaziv(puniNaziv: String): String{
