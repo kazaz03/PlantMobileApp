@@ -142,7 +142,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         //ovdje dodajemo listener za svaki adapter posebno kad se klikne u modu
-        //i pored toga se spasi filtrirana lista
         biljkeAdapter1.setOnItemClickListener(object : BiljkaAdapterMedicinska.OnItemClickListener {
             override fun onItemClick(biljka: Biljka) {
                 filtriranaLista= biljkeAdapter1.filterByCriteria(biljka).toMutableList()
@@ -151,7 +150,8 @@ class MainActivity : AppCompatActivity() {
 
         biljkeAdapter2.setOnItemClickListener(object : BiljkaAdapterBotanicka.OnItemClickListener {
             override fun onItemClick(biljka: Biljka) {
-                filtriranaLista= biljkeAdapter2.filterByCriteria(biljka).toMutableList()
+                if(!biljkeAdapter2.jeLiPretragaObavljena())
+                    filtriranaLista= biljkeAdapter2.filterByCriteria(biljka).toMutableList()
             }
         })
 

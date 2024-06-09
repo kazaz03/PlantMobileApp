@@ -113,6 +113,10 @@ class BiljkaAdapterBotanicka(var context: Context, var biljke: List<Biljka>): Re
         }
     }
 
+    fun jeLiPretragaObavljena():Boolean{
+        return pretragaObavljena
+    }
+
     fun filterByCriteria(biljka: Biljka): List<Biljka>
     {
         if(pretragaObavljena) return biljke.toList()
@@ -125,11 +129,5 @@ class BiljkaAdapterBotanicka(var context: Context, var biljke: List<Biljka>): Re
         it.porodica==porodica}
         notifyDataSetChanged()
         return biljke.toList()
-    }
-
-    fun getLatinskiNaziv(puniNaziv: String): String?{
-        val pattern = "\\((.*?)\\)".toRegex()
-        val matchResult = pattern.find(puniNaziv)
-        return matchResult?.groupValues?.get(1)
     }
 }
