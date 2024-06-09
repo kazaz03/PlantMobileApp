@@ -84,7 +84,7 @@ class TrefleDAO {
                             medicinskoUpozorenjeTekst=staro+novo
                         }
                         val toxicityBiljke=plantMainSpecies?.specifications?.toxicity
-                        if(toxicityBiljke!=null){
+                        if(toxicityBiljke!=null && toxicityBiljke!="none"){
                             if(!medicinskoUpozorenjeTekst.contains("TOKSIČNO")){
                                 val staro=medicinskoUpozorenjeTekst
                                 val novo=" TOKSIČNO"
@@ -115,7 +115,7 @@ class TrefleDAO {
         }
         val novabiljka=Biljka(ime,porodica,medicinskoUpozorenjeTekst,medicinskeKoristi,profilokusa,
             jelaBiljke.toList(),listaKlima.toList(),listaZemljista.toList())
-        //Log.d("novabiljka",novabiljka.toString())
+        Log.d("novabiljka",novabiljka.toString())
         return@withContext novabiljka
     }
 
@@ -152,7 +152,7 @@ class TrefleDAO {
                                     medUpozorenje=staro+novo
                                 }
                                 val toksicno=second_response.body()?.data?.mainSpecies?.specifications?.toxicity
-                                if(toksicno!=null)
+                                if(toksicno!=null && toksicno!="none")
                                 {
                                     val staro=medUpozorenje
                                     val novo=" TOKSIČNO"
