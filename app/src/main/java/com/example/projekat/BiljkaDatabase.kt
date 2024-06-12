@@ -27,6 +27,6 @@ abstract class BiljkaDatabase : RoomDatabase(){
                 context.applicationContext,
                 BiljkaDatabase::class.java,
                 "biljke-db"
-            ).fallbackToDestructiveMigration().build()
+            ).build()//fallbackToDestructiveMigration().build()
     }
 }

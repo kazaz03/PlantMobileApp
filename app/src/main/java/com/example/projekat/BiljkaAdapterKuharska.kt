@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -60,11 +61,23 @@ class BiljkaAdapterKuharska(var context: Context, var biljke: List<Biljka>): Rec
         val scope = CoroutineScope(Job() + Dispatchers.Main)
         scope.launch{
             val image=trefleDAO.getImage(biljka)
-            holder.slikaBiljke.setImageBitmap(image)
-
-            val biljkaizbaze=db.biljkaDAO().getBiljkaByName(biljka.naziv)
-            if(biljkaizbaze!=null)
-                db!!.biljkaDAO().addImage(biljkaizbaze.id,image)
+            //prvo dohvatamo id od biljke
+            val bitmapRez=
+                biljka.id?.let { db.biljkaDAO().getImageByBiljkaId(it) }//uzet sliku ako ima iz biljkabitmap
+            //ako nema neta i bitmapRez je vratio sliku iz biljkabitmap
+            if(!NetworkUtils.isNetworkAvailable(context) && bitmapRez!=null)
+            {
+                holder.slikaBiljke.setImageBitmap(bitmapRez.bitmap)
+            }else if(!NetworkUtils.isNetworkAvailable(context) && bitmapRez==null){
+                //ako nema neta i nema u bazi spasene slike, postavit ce default
+                holder.slikaBiljke.setImageBitmap(image)
+            }else if(NetworkUtils.isNetworkAvailable(context) && bitmapRez==null && biljka.id!=null){
+                //ako ima neta i bitmaprez je vratio nista jer nema u bazi
+                db.biljkaDAO().addImage(biljka.id,image)
+                holder.slikaBiljke.setImageBitmap(image)
+            }else if (bitmapRez!=null){
+                holder.slikaBiljke.setImageBitmap(bitmapRez.bitmap)
+            }
         }
 
         holder.nazivBiljke.text=biljka.naziv;
@@ -90,6 +103,7 @@ class BiljkaAdapterKuharska(var context: Context, var biljke: List<Biljka>): Rec
         {
             holder.jelo3.text=""
         }
+        holder.checkBox.isChecked=biljka.onlineChecked
     }
 
     override fun getItemCount(): Int {
@@ -103,6 +117,7 @@ class BiljkaAdapterKuharska(var context: Context, var biljke: List<Biljka>): Rec
         val jelo1:TextView=itemView.findViewById(R.id.jelo1Item)
         val jelo2:TextView=itemView.findViewById(R.id.jelo2Item)
         val jelo3:TextView=itemView.findViewById(R.id.jelo3Item)
+        val checkBox: CheckBox =itemView.findViewById(R.id.checkBox)
 
         init {
             itemView.setOnClickListener {

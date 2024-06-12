@@ -46,7 +46,7 @@ class TrefleDAO {
         } catch (e: IOException) {
             e.printStackTrace()
         }
-        return@withContext getDefaultBitmap()//defaultBitmap
+        return@withContext getDefaultBitmap()
     }
 
     suspend fun fixData(plant: Biljka): Biljka= withContext(Dispatchers.IO){
@@ -115,7 +115,7 @@ class TrefleDAO {
         }
         val novabiljka=Biljka(plant.id,ime,porodica,medicinskoUpozorenjeTekst,medicinskeKoristi,profilokusa,
             jelaBiljke.toList(),listaKlima.toList(),listaZemljista.toList(),true)
-        //Log.d("novabiljka",novabiljka.toString())
+        Log.d("novabiljka",novabiljka.toString())
         return@withContext novabiljka
     }
 

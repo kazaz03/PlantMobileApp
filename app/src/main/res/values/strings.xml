@@ -42,4 +42,5 @@
     <string name="pretraga">Brza pretraga</string>
     <string name="unospretrage">Unesi tekst</string>
     <string name="latinskiError">Naziv mora imati i latinski naziv unesen</string>
+    <string name="provjerena">checked</string>
 </resources>

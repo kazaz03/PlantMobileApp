@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -69,25 +70,25 @@ class BiljkaAdapterMedicinska(var context: Context,var biljke: List<Biljka>): Re
         val scope = CoroutineScope(Job() + Dispatchers.Main)
 
         scope.launch{
-            //prvo dohvatamo id od biljke
             val image=trefleDAO.getImage(biljka)
-            holder.slikaBiljke.setImageBitmap(image)
-
-            val biljkaizbaze=db.biljkaDAO().getBiljkaByName(biljka.naziv)
-            if(biljkaizbaze!=null)
-                db!!.biljkaDAO().addImage(biljkaizbaze.id,image)
-
-            /*val biljkaizbaze=db.biljkaDAO().getBiljkaByName(biljka.naziv)
-            if(biljkaizbaze!=null){
-               if(biljkaizbaze.id!=null){
-                 val bitmapRez=db.biljkaDAO().getImageByBiljkaId(biljkaizbaze.id)
-                 if(bitmapRez!=null)
-                 {
-                     holder.slikaBiljke.setImageBitmap(bitmapRez.bitmap)
-                 }else db.biljkaDAO().addImage(biljkaizbaze.id,image)
-               }
-            }*/
-            //if(biljkaizbaze!=null) db!!.biljkaDAO().addImage(biljkaizbaze.id,image)
+            //prvo dohvatamo id od biljke
+            val bitmapRez=
+                biljka.id?.let { db.biljkaDAO().getImageByBiljkaId(it) }//uzet sliku ako ima iz biljkabitmap
+            //ako nema neta i bitmapRez je vratio sliku iz biljkabitmap
+            if(!NetworkUtils.isNetworkAvailable(context) && bitmapRez!=null)
+            {
+                holder.slikaBiljke.setImageBitmap(bitmapRez.bitmap)
+            }else if(!NetworkUtils.isNetworkAvailable(context) && bitmapRez==null){
+                //ako nema neta i nema u bazi spasene slike, postavit ce default
+                holder.slikaBiljke.setImageBitmap(image)
+            }else if(NetworkUtils.isNetworkAvailable(context) && bitmapRez==null && biljka.id!=null){
+                //ako ima neta i bitmaprez je vratio nista jer nema u bazi
+                db.biljkaDAO().addImage(biljka.id,image)
+                holder.slikaBiljke.setImageBitmap(image)
+            }else if (bitmapRez!=null){
+                holder.slikaBiljke.setImageBitmap(bitmapRez.bitmap)
+                Log.d("dosao",biljka.naziv.toString())
+            }
         }
 
         holder.nazivBiljke.text=biljka.naziv;
@@ -118,6 +119,7 @@ class BiljkaAdapterMedicinska(var context: Context,var biljke: List<Biljka>): Re
         {
             holder.upozorenje.text=""
         }
+        holder.checkBox.isChecked=biljka.onlineChecked
     }
 
     override fun getItemCount(): Int {
@@ -131,6 +133,7 @@ class BiljkaAdapterMedicinska(var context: Context,var biljke: List<Biljka>): Re
         val korist2: TextView =itemView.findViewById(R.id.korist2Item);
         val korist3: TextView =itemView.findViewById(R.id.korist3Item);
         val upozorenje: TextView =itemView.findViewById(R.id.upozorenjeItem);
+        val checkBox: CheckBox =itemView.findViewById(R.id.checkBox)
 
         init {
             itemView.setOnClickListener {

@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -71,11 +72,28 @@ class BiljkaAdapterBotanicka(var context: Context, var biljke: List<Biljka>): Re
         val scope = CoroutineScope(Job() + Dispatchers.Main)
         scope.launch{
             val image=trefleDAO.getImage(biljka)
-            holder.slikaBiljke.setImageBitmap(image)
+            //prvo dohvatamo id od biljke
+            if(pretragaObavljena){
+                holder.slikaBiljke.setImageBitmap(image)
+            }else{
+            val bitmapRez=
+                biljka.id?.let { db.biljkaDAO().getImageByBiljkaId(it) }//uzet sliku ako ima iz biljkabitmap
+            //ako nema neta i bitmapRez je vratio sliku iz biljkabitmap
+            if(!NetworkUtils.isNetworkAvailable(context) && bitmapRez!=null)
+            {
+                holder.slikaBiljke.setImageBitmap(bitmapRez.bitmap)
+            }else if(!NetworkUtils.isNetworkAvailable(context) && bitmapRez==null){
+                //ako nema neta i nema u bazi spasene slike, postavit ce default
+                holder.slikaBiljke.setImageBitmap(image)
+            }else if(NetworkUtils.isNetworkAvailable(context) && bitmapRez==null && biljka.id!=null){
+                //ako ima neta i bitmaprez je vratio nista jer nema u bazi
+                db.biljkaDAO().addImage(biljka.id,image)
+                holder.slikaBiljke.setImageBitmap(image)
+            }else if (bitmapRez!=null){
+                holder.slikaBiljke.setImageBitmap(bitmapRez.bitmap)
+            }
+            }
 
-            val biljkaizbaze=db.biljkaDAO().getBiljkaByName(biljka.naziv)
-            if(biljkaizbaze!=null)
-                db!!.biljkaDAO().addImage(biljkaizbaze.id,image)
         }
 
         holder.nazivBiljke.text=biljka.naziv;
@@ -94,6 +112,10 @@ class BiljkaAdapterBotanicka(var context: Context, var biljke: List<Biljka>): Re
         {
             holder.zemlja.text=""
         }
+        if(pretragaObavljena) holder.checkBox.visibility=View.GONE
+        else {
+            holder.checkBox.isChecked=biljka.onlineChecked
+        }
     }
 
     override fun getItemCount(): Int {
@@ -106,6 +128,7 @@ class BiljkaAdapterBotanicka(var context: Context, var biljke: List<Biljka>): Re
         val klima: TextView=itemView.findViewById(R.id.klimatskiTipItem);
         val zemlja: TextView=itemView.findViewById(R.id.zemljisniTipItem);
         val porodica: TextView=itemView.findViewById(R.id.porodicaItem)
+        val checkBox: CheckBox =itemView.findViewById(R.id.checkBox)
 
         init {
             itemView.setOnClickListener {

@@ -1,8 +1,11 @@
 package com.example.projekat
 
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -44,6 +47,7 @@ class MainActivity : AppCompatActivity() {
     private var odabranaBoja=""
     private lateinit var spinnerRV:Spinner
     private lateinit var context:Context
+    private lateinit var networkChangeReceiver: BroadcastReceiver
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -86,10 +90,27 @@ class MainActivity : AppCompatActivity() {
 
         //uzimanje biljaka iz baze
         val scope=CoroutineScope(Job() + Dispatchers.Main)
+
+        networkChangeReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                if (NetworkUtils.isNetworkAvailable(context)) {
+                    scope.launch {
+                        var a=0
+                        db.biljkaDAO().fixOfflineBiljka()
+                        Log.d("broj ispravljenih",a.toString())
+                        biljke=db.biljkaDAO().getAllBiljkas()
+                    }
+                }
+            }
+        }
+        // registracija BroadcastReceivera
+        val filter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        registerReceiver(networkChangeReceiver, filter)
+
         scope.launch{
-            db.biljkaDAO().clearData()
+            /*db.biljkaDAO().clearData()
             for(plant in getBiljke())
-                db.biljkaDAO().saveBiljka(plant)
+                db.biljkaDAO().saveBiljka(plant)*/
             biljke = db.biljkaDAO().getAllBiljkas()
             biljkeView.setPadding(0,0,0,spinnerRV.height)
             biljkeView.adapter=biljkeAdapter1
@@ -111,8 +132,8 @@ class MainActivity : AppCompatActivity() {
                             biljkeAdapter1.updateBiljke(biljke)
                     }else if(selectedOption=="Botanički")
                     {
+                        biljkeView.setPadding(0,0,0,165+165) //k
                         botanickeFuncionalnosti.visibility=View.VISIBLE //kad je u botanickim da se vidi
-                        biljkeView.setPadding(0,0,0,spinnerRV.height+botanickeFuncionalnosti.height) //kad je botanicki da je veci padding
                         biljkeView.adapter=biljkeAdapter2
                         if (filtriranaLista.isNotEmpty()) {
                             biljkeAdapter2.updateBiljke(filtriranaLista)
@@ -140,7 +161,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         if(!NetworkUtils.isNetworkAvailable(this)){
-            Toast.makeText(this,"Nema konekcije da se dobave slike biljaka", Toast.LENGTH_LONG).show()
+            Toast.makeText(this,"Slike biljaka se dobavljaju iz baze", Toast.LENGTH_LONG).show()
         }
 
         bojaSPIN.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
@@ -300,10 +321,15 @@ class MainActivity : AppCompatActivity() {
                null, emptyList(), emptyList(), emptyList(),false)
             val scope= CoroutineScope(Job() + Dispatchers.Main)
             scope.launch{
-                novaPopravljenaBiljka=trefleDAO.fixData(novabiljka)
-                Log.d("nova2",novaPopravljenaBiljka.toString())
-                if(naziv2!=null){
-                    db.biljkaDAO().saveBiljka(novaPopravljenaBiljka)
+                if(NetworkUtils.isNetworkAvailable(context)){
+                    novaPopravljenaBiljka=trefleDAO.fixData(novabiljka)
+                    Log.d("nova2",novaPopravljenaBiljka.toString())
+                    if(naziv2!=null){
+                        db.biljkaDAO().saveBiljka(novaPopravljenaBiljka)
+                    }
+                }else {
+                    if(naziv2!=null)
+                        db.biljkaDAO().saveBiljka(novabiljka)
                 }
                 biljke= db.biljkaDAO().getAllBiljkas()
                 biljkeAdapter1.updateBiljke(biljke)
@@ -312,5 +338,10 @@ class MainActivity : AppCompatActivity() {
                 biljkeView.adapter=biljkeAdapter1
             }
         };
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        // ponistavanje BroadcastReceivera kada se aktivnost uništi
+        unregisterReceiver(networkChangeReceiver)
     }
 }
