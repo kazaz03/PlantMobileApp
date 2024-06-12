@@ -20,8 +20,10 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -31,7 +33,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var biljkeAdapter1: BiljkaAdapterMedicinska
     private lateinit var biljkeAdapter2: BiljkaAdapterBotanicka
     private lateinit var biljkeAdapter3: BiljkaAdapterKuharska
-    private var biljke = getBiljke()
+    private lateinit var biljke: List<Biljka>
     private lateinit var botanickeFuncionalnosti: LinearLayout
     private lateinit var pretragaET: EditText
     private lateinit var brzaPretraga: Button
@@ -53,6 +55,9 @@ class MainActivity : AppCompatActivity() {
         }
         context=this
         trefleDAO.setContext(context)
+
+        val db=BiljkaDatabase.getInstance(context)
+
         botanickeFuncionalnosti=findViewById(R.id.botanickeFunkcionalnosti)
         spinnerRV=findViewById(R.id.modSpinner)
         biljkeView=findViewById(R.id.biljkeRV)
@@ -77,52 +82,60 @@ class MainActivity : AppCompatActivity() {
         biljkeAdapter1=BiljkaAdapterMedicinska(context,mutableListOf())
         biljkeAdapter2= BiljkaAdapterBotanicka(context,mutableListOf())
         biljkeAdapter3=BiljkaAdapterKuharska(context,mutableListOf())
+        botanickeFuncionalnosti.visibility=View.GONE
 
-        spinnerRV.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            @SuppressLint("SuspiciousIndentation")
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val selectedOption: String = parent?.getItemAtPosition(position).toString()
-                val visinaSpinnera = spinnerRV.height
-                val visinaBotanickog = botanickeFuncionalnosti.height
-                Log.d("visinaspinnera",visinaSpinnera.toString())
-                Log.d("visinabot",visinaBotanickog.toString())
-                if(selectedOption=="Medicinski")
-                {
-                    biljkeView.setPadding(0,0,0,visinaSpinnera)
-                    botanickeFuncionalnosti.visibility=View.GONE
-                    pretragaET.setText("")
-                    biljkeAdapter2.postaviNaFalse()
-                    biljkeView.adapter=biljkeAdapter1
-                    if (filtriranaLista.isNotEmpty()) {
-                        biljkeAdapter1.updateBiljke(filtriranaLista)
+        //uzimanje biljaka iz baze
+        val scope=CoroutineScope(Job() + Dispatchers.Main)
+        scope.launch{
+            db.biljkaDAO().clearData()
+            for(plant in getBiljke())
+                db.biljkaDAO().saveBiljka(plant)
+            biljke = db.biljkaDAO().getAllBiljkas()
+            biljkeView.setPadding(0,0,0,spinnerRV.height)
+            biljkeView.adapter=biljkeAdapter1
+            biljkeAdapter1.updateBiljke(biljke)
+            spinnerRV.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                @SuppressLint("SuspiciousIndentation")
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    val selectedOption: String = parent?.getItemAtPosition(position).toString()
+                    if(selectedOption=="Medicinski")
+                    {
+                        biljkeView.setPadding(0,0,0,spinnerRV.height)
+                        botanickeFuncionalnosti.visibility=View.GONE
+                        pretragaET.setText("")
+                        biljkeAdapter2.postaviNaFalse()
+                        biljkeView.adapter=biljkeAdapter1
+                        if (filtriranaLista.isNotEmpty()) {
+                            biljkeAdapter1.updateBiljke(filtriranaLista)
+                        }else
+                            biljkeAdapter1.updateBiljke(biljke)
+                    }else if(selectedOption=="Botanički")
+                    {
+                        botanickeFuncionalnosti.visibility=View.VISIBLE //kad je u botanickim da se vidi
+                        biljkeView.setPadding(0,0,0,spinnerRV.height+botanickeFuncionalnosti.height) //kad je botanicki da je veci padding
+                        biljkeView.adapter=biljkeAdapter2
+                        if (filtriranaLista.isNotEmpty()) {
+                            biljkeAdapter2.updateBiljke(filtriranaLista)
+                        }else
+                            biljkeAdapter2.updateBiljke(biljke)
                     }else
-                    biljkeAdapter1.updateBiljke(biljke)
-                }else if(selectedOption=="Botanički")
-                {
-                    biljkeView.setPadding(0,0,0,visinaSpinnera+visinaBotanickog) //kad je botanicki da je veci padding
-                    botanickeFuncionalnosti.visibility=View.VISIBLE //kad je u botanickim da se vidi
-                    biljkeView.adapter=biljkeAdapter2
-                    if (filtriranaLista.isNotEmpty()) {
-                        biljkeAdapter2.updateBiljke(filtriranaLista)
-                    }else
-                    biljkeAdapter2.updateBiljke(biljke)
-                }else
-                {
-                    biljkeView.setPadding(0,0,0,visinaSpinnera)
-                    botanickeFuncionalnosti.visibility=View.GONE
-                    pretragaET.setText("")
-                    biljkeAdapter2.postaviNaFalse()
-                    biljkeView.adapter=biljkeAdapter3
-                    if (filtriranaLista.isNotEmpty()) {
-                        biljkeAdapter3.updateBiljke(filtriranaLista)
-                    }else
-                    biljkeAdapter3.updateBiljke(biljke)
+                    {
+                        biljkeView.setPadding(0,0,0,spinnerRV.height)
+                        botanickeFuncionalnosti.visibility=View.GONE
+                        pretragaET.setText("")
+                        biljkeAdapter2.postaviNaFalse()
+                        biljkeView.adapter=biljkeAdapter3
+                        if (filtriranaLista.isNotEmpty()) {
+                            biljkeAdapter3.updateBiljke(filtriranaLista)
+                        }else
+                            biljkeAdapter3.updateBiljke(biljke)
+                    }
                 }
-            }
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                biljkeAdapter1=BiljkaAdapterMedicinska(context,listOf())
-                biljkeView.adapter=biljkeAdapter1
-                biljkeAdapter1.updateBiljke(biljke)
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    biljkeAdapter1=BiljkaAdapterMedicinska(context,listOf())
+                    biljkeView.adapter=biljkeAdapter1
+                    biljkeAdapter1.updateBiljke(biljke)
+                }
             }
         }
 
@@ -281,16 +294,18 @@ class MainActivity : AppCompatActivity() {
                 naziv =naziv2.toString(), porodica =porodica2.toString(),
                 medicinskoUpozorenje =medicinskoUpozorenje2.toString(), medicinskeKoristi =medicinskeKoristiLista.toList(),
                 profilOkusa =Okus2, jela = listaJela.toMutableList(), klimatskiTipovi = klimatskiTipoviLista.toMutableList(),
-                zemljisniTipovi = zemljisniTipoviLista)
+                zemljisniTipovi = zemljisniTipoviLista,onlineChecked=false)
 
-            var novaPopravljenaBiljka=Biljka("","","", emptyList(),null, emptyList(),
-               emptyList(), emptyList())
+            var novaPopravljenaBiljka=Biljka(0,"", "","", emptyList(),
+               null, emptyList(), emptyList(), emptyList(),false)
             val scope= CoroutineScope(Job() + Dispatchers.Main)
             scope.launch{
                 novaPopravljenaBiljka=trefleDAO.fixData(novabiljka)
                 Log.d("nova2",novaPopravljenaBiljka.toString())
-                if(naziv2!=null)dodajNoveBiljke(novaPopravljenaBiljka)
-                biljke= getBiljke()
+                if(naziv2!=null){
+                    db.biljkaDAO().saveBiljka(novaPopravljenaBiljka)
+                }
+                biljke= db.biljkaDAO().getAllBiljkas()
                 biljkeAdapter1.updateBiljke(biljke)
                 biljkeAdapter2.updateBiljke(biljke)
                 biljkeAdapter3.updateBiljke(biljke)

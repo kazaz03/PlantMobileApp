@@ -65,11 +65,29 @@ class BiljkaAdapterMedicinska(var context: Context,var biljke: List<Biljka>): Re
     override fun onBindViewHolder(holder: BiljkaViewHolder, position: Int) {
         trefleDAO.setContext(context)
         val biljka=biljke[position];
+        val db=BiljkaDatabase.getInstance(context)
         val scope = CoroutineScope(Job() + Dispatchers.Main)
 
         scope.launch{
+            //prvo dohvatamo id od biljke
             val image=trefleDAO.getImage(biljka)
             holder.slikaBiljke.setImageBitmap(image)
+
+            val biljkaizbaze=db.biljkaDAO().getBiljkaByName(biljka.naziv)
+            if(biljkaizbaze!=null)
+                db!!.biljkaDAO().addImage(biljkaizbaze.id,image)
+
+            /*val biljkaizbaze=db.biljkaDAO().getBiljkaByName(biljka.naziv)
+            if(biljkaizbaze!=null){
+               if(biljkaizbaze.id!=null){
+                 val bitmapRez=db.biljkaDAO().getImageByBiljkaId(biljkaizbaze.id)
+                 if(bitmapRez!=null)
+                 {
+                     holder.slikaBiljke.setImageBitmap(bitmapRez.bitmap)
+                 }else db.biljkaDAO().addImage(biljkaizbaze.id,image)
+               }
+            }*/
+            //if(biljkaizbaze!=null) db!!.biljkaDAO().addImage(biljkaizbaze.id,image)
         }
 
         holder.nazivBiljke.text=biljka.naziv;

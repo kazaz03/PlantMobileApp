@@ -56,10 +56,15 @@ class BiljkaAdapterKuharska(var context: Context, var biljke: List<Biljka>): Rec
     override fun onBindViewHolder(holder: BiljkaViewHolder, position: Int) {
         val biljka=biljke[position];
         trefleDAO.setContext(context)
+        val db=BiljkaDatabase.getInstance(context)
         val scope = CoroutineScope(Job() + Dispatchers.Main)
         scope.launch{
             val image=trefleDAO.getImage(biljka)
             holder.slikaBiljke.setImageBitmap(image)
+
+            val biljkaizbaze=db.biljkaDAO().getBiljkaByName(biljka.naziv)
+            if(biljkaizbaze!=null)
+                db!!.biljkaDAO().addImage(biljkaizbaze.id,image)
         }
 
         holder.nazivBiljke.text=biljka.naziv;

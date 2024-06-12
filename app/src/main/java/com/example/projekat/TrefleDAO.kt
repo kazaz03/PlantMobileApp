@@ -113,9 +113,9 @@ class TrefleDAO {
         }catch(e: IOException){
             e.printStackTrace()
         }
-        val novabiljka=Biljka(ime,porodica,medicinskoUpozorenjeTekst,medicinskeKoristi,profilokusa,
-            jelaBiljke.toList(),listaKlima.toList(),listaZemljista.toList())
-        Log.d("novabiljka",novabiljka.toString())
+        val novabiljka=Biljka(plant.id,ime,porodica,medicinskoUpozorenjeTekst,medicinskeKoristi,profilokusa,
+            jelaBiljke.toList(),listaKlima.toList(),listaZemljista.toList(),true)
+        //Log.d("novabiljka",novabiljka.toString())
         return@withContext novabiljka
     }
 
@@ -170,8 +170,8 @@ class TrefleDAO {
                                     val klime=getKlima(light,atmosfera)
                                     listaKlima=klime
                                 }
-                                var biljka=Biljka(naziv,porodica,medUpozorenje, emptyList(),null,
-                                    mutableListOf(),listaKlima,listaZemljista)
+                                var biljka=Biljka(0,naziv,porodica,medUpozorenje, emptyList(),null,
+                                    mutableListOf(),listaKlima,listaZemljista,false)
                                 biljke.add(biljka)
                             }
                         }

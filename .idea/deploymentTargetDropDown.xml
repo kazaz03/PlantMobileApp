@@ -2,44 +2,20 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="BiljkeDB4test">
+        <State />
+      </entry>
+      <entry key="DatabaseTest">
+        <State />
+      </entry>
       <entry key="NemaLatinskogNaziv()">
         <State />
       </entry>
-      <entry key="PredugNaziv()">
-        <State />
-      </entry>
-      <entry key="PrikazSlikeUImageView()">
-        <State />
-      </entry>
-      <entry key="TestiranjeValidacije">
+      <entry key="a6_addSlikaAndCheckItsAdded()">
         <State />
       </entry>
       <entry key="app">
-        <State>
-          <runningDeviceTargetSelectedWithDropDown>
-            <Target>
-              <type value="RUNNING_DEVICE_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="C:\Users\Korisnik\.android\avd\Pixel_3a_API_34_extension_level_7_x86_64.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </runningDeviceTargetSelectedWithDropDown>
-          <targetSelectedWithDropDown>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="C:\Users\Korisnik\.android\avd\Pixel_3a_API_34_extension_level_7_x86_64.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-06-09T18:44:05.887914100Z" />
-        </State>
+        <State />
       </entry>
     </value>
   </component>
