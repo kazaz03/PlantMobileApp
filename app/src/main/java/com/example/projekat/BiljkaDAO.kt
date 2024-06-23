@@ -15,26 +15,28 @@ interface BiljkaDAO {
 
     @Insert
     suspend fun insertBiljka(biljka: Biljka)
-    @Insert
+    @Transaction
     suspend fun saveBiljka(biljka: Biljka): Boolean = withContext(Dispatchers.IO)
     {
-        return@withContext try {
-            val existingBiljka = getBiljkaByName(biljka.naziv)
-            if (existingBiljka == null) {
-                insertBiljka(biljka)
-                true
-            } else {
-                // Ako već postoji, vrati false
-                false
-            }
-        } catch (e: Exception) {
-            false
+        try{
+        val sveBiljke=getAllBiljkas()
+        for(biljke in sveBiljke)
+        {
+            val naziv1= izvuciLatinski(biljke.naziv)
+            val naziv2= izvuciLatinski(biljka.naziv)
+            if(naziv1.equals(naziv2))
+                return@withContext false
+        }
+            insertBiljka(biljka)
+            return@withContext false
+        }catch(e: Exception){
+            return@withContext false
         }
     }
 
     @Query("SELECT * FROM Biljka WHERE naziv = :naziv")
     suspend fun getBiljkaByName(naziv: String): Biljka?
-    @Insert
+    @Transaction
     suspend fun addImage(idBiljke: Long?, bitmap: Bitmap): Boolean = withContext(Dispatchers.IO){
         try{
             if(idBiljke!=null){
@@ -95,4 +97,10 @@ interface BiljkaDAO {
     @Query("SELECT * FROM BiljkaBitmap WHERE idBiljke=:idBiljke")
     suspend fun getImageByBiljkaId(idBiljke: Long): BiljkaBitmap?
 
+}
+
+fun izvuciLatinski(puniNaziv: String):String{
+    val pattern = "\\((.*?)\\)".toRegex()
+    val matchResult = pattern.find(puniNaziv)
+    return matchResult?.groupValues?.get(1)?:""
 }

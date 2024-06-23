@@ -108,9 +108,12 @@ class MainActivity : AppCompatActivity() {
         registerReceiver(networkChangeReceiver, filter)
 
         scope.launch{
-            /*db.biljkaDAO().clearData()
+            //db.biljkaDAO().clearData()
             for(plant in getBiljke())
-                db.biljkaDAO().saveBiljka(plant)*/
+                db.biljkaDAO().saveBiljka(plant)
+            if(NetworkUtils.isNetworkAvailable(context)){
+                db.biljkaDAO().fixOfflineBiljka()
+            }
             biljke = db.biljkaDAO().getAllBiljkas()
             biljkeView.setPadding(0,0,0,spinnerRV.height)
             biljkeView.adapter=biljkeAdapter1

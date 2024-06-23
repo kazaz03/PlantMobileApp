@@ -56,7 +56,7 @@ val biljkestatic = listOf(
         zemljisniTipovi = listOf(Zemljiste.PJESKOVITO, Zemljiste.KRECNJACKO),onlineChecked=false
     ),
     Biljka(
-        naziv ="Aloe vera (Aloe Barbadensis)",
+        naziv ="Aloe vera (Aloe vera)",
         porodica ="Asphodelaceae (čepljezovke)",
         medicinskoUpozorenje ="Aloe vera može izazvati alergijske reakcije na koži kod nekih ljudi. Unutarnja upotreba može " +
                 "uzrokovati probavne smetnje ili interakcije s lijekovima. Trudnice, dojilje i osobe s kroničnim bolestima trebaju se posavjetovati s liječnikom prije upotrebe.",
@@ -77,7 +77,7 @@ val biljkestatic = listOf(
         zemljisniTipovi = listOf(Zemljiste.GLINENO),onlineChecked=false),
 
     Biljka(
-        naziv ="Hibiskus (Rosa Sinensis)", porodica ="Malvaceae (sljez)",
+        naziv ="Hibiskus (Hibiscus rosa-sinensis)", porodica ="Malvaceae (sljez)",
         medicinskoUpozorenje ="Hibiskus može djelovati kao diuretik (povećava mokrenje) i smanjiti krvni tlak. Stoga, osobe koje uzimaju lijekove za regulaciju krvnog tlaka ili diuretike trebale bi se posavjetovati sa svojim liječnikom prije konzumiranja hibiskusa kako bi izbjegli moguće interakcije lijekova.",
         medicinskeKoristi = listOf(MedicinskaKorist.PROTUUPALNO),
         profilOkusa =ProfilOkusaBiljke.SLATKI,
@@ -85,7 +85,7 @@ val biljkestatic = listOf(
         klimatskiTipovi = mutableListOf(KlimatskiTip.UMJERENA,KlimatskiTip.SREDOZEMNA),
         zemljisniTipovi =listOf(Zemljiste.CRNICA),onlineChecked=false),
     Biljka(
-        naziv ="Limun (Citrus Limon)", porodica ="Rutaceae (citrus)",
+        naziv ="Limun (Citrus medica)", porodica ="Rutaceae (citrus)",
         medicinskoUpozorenje ="Limunov sok može izazvati iritaciju kože kod nekih ljudi, posebno ako se koristi neposredno prije izlaganja suncu." +
                 "Konzumacija velikih količina limunovog soka može izazvati iritaciju sluznice želuca ili crijeva kod nekih ljudi, posebno onih s osjetljivim želucem ili problemima s kiselinom. " +
                 " Limun može interagirati s određenim lijekovima, posebno onima koji su osjetljivi na kiselost želuca.",

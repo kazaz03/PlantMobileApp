@@ -40,7 +40,7 @@ class BiljkeDB4test {
         "Biljka" to arrayListOf(
             "id",
             "naziv",
-            "porodica", //zasto ovdje family a ne porodica
+            "porodica",
             "medicinskoUpozorenje",
             "jela",
             "klimatskiTipovi",
